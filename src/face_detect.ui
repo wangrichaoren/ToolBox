@@ -1,0 +1,94 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ui version="4.0">
+ <class>face_detect</class>
+ <widget class="QDialog" name="face_detect">
+  <property name="geometry">
+   <rect>
+    <x>0</x>
+    <y>0</y>
+    <width>994</width>
+    <height>887</height>
+   </rect>
+  </property>
+  <property name="windowTitle">
+   <string>人脸识别</string>
+  </property>
+  <layout class="QGridLayout" name="gridLayout">
+   <item row="0" column="0" colspan="3">
+    <widget class="QGraphicsView" name="graphicsView">
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
+     <property name="minimumSize">
+      <size>
+       <width>976</width>
+       <height>612</height>
+      </size>
+     </property>
+     <property name="maximumSize">
+      <size>
+       <width>976</width>
+       <height>612</height>
+      </size>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0" rowspan="3">
+    <widget class="QGroupBox" name="groupBox">
+     <property name="title">
+      <string>选项</string>
+     </property>
+     <layout class="QGridLayout" name="gridLayout_2">
+      <item row="0" column="0">
+       <widget class="QRadioButton" name="radioButton">
+        <property name="text">
+         <string>本地相机</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="1">
+       <widget class="QRadioButton" name="radioButton_2">
+        <property name="text">
+         <string>外部&amp;USB相机</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
+    </widget>
+   </item>
+   <item row="1" column="1">
+    <widget class="QPushButton" name="pushButtonOpenCam">
+     <property name="text">
+      <string>打开相机</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="2" rowspan="3">
+    <widget class="QGroupBox" name="groupBox_2">
+     <property name="title">
+      <string>信息</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="pushButtonDet">
+     <property name="text">
+      <string>开启人脸检测</string>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="1">
+    <widget class="QPushButton" name="pushButtonCloseCam">
+     <property name="text">
+      <string>关闭相机</string>
+     </property>
+    </widget>
+   </item>
+  </layout>
+ </widget>
+ <resources/>
+ <connections/>
+</ui>

@@ -1,0 +1,13 @@
+<RCC>
+    <qresource prefix="/">
+        <file>icons/icon.png</file>
+        <file>icons/encoder.png</file>
+        <file>icons/exit.png</file>
+        <file>icons/星空.png</file>
+        <file>icons/数据.png</file>
+        <file>icons/包装.png</file>
+        <file>icons/开发.png</file>
+        <file>icons/个人.png</file>
+        <file>icons/沙滩.png</file>
+    </qresource>
+</RCC>
