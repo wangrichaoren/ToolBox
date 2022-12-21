@@ -79,10 +79,9 @@ face_detect::face_detect(QWidget *parent) :
 
             flip(frame, frame, 1);
 
-            // todo 人脸识别算法
+            // 人脸识别
             if (is_open_det) {
-                qDebug("人脸识别中...");
-//                usleep(1000 * 100);
+//                qDebug("人脸识别中...");
                 frame = face->detect(frame);
             }
 

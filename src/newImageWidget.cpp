@@ -29,9 +29,9 @@ void newImageWidget::showImageFromMat(Mat &mat) {
     auto img_h = q_img.height();
     auto v_w = instance->width();
     auto v_h = instance->height();
-    auto r1 = v_w * 1.0 / img_w;
-    auto r2 = v_h * 1.0 / img_h;
-    double scale_r = 0.0;
+//    auto r1 = v_w * 1.0 / img_w;
+//    auto r2 = v_h * 1.0 / img_h;
+//    double scale_r = 0.0;
 //    mScene->setSceneRect(instance->x());
     instance->setSceneRect(QRectF(-(v_w / 2), -(v_h / 2), v_w,
                                   v_h));

@@ -127,10 +127,10 @@ void ImageWidget::mousePressEvent(QGraphicsSceneMouseEvent *event) {
 
 void ImageWidget::mouseMoveEvent(QGraphicsSceneMouseEvent *event) {
     // todo ？需要鼠标点击后在移动才能进入 move事件函数？不合理啊？
-    if (direction == dir_top | direction == dir_bottom | direction == dir_left | direction == dir_right) {
+    if ((direction == dir_top) | (direction == dir_bottom) | (direction == dir_left) | (direction == dir_right)) {
         moveRectLine(event, direction);
-    } else if (direction == dir_top_left | direction == dir_top_right | direction == dir_bottom_left |
-               direction == dir_bottom_right) {
+    } else if ((direction == dir_top_left) | (direction == dir_top_right) | (direction == dir_bottom_left) |
+              ( direction == dir_bottom_right)) {
         scaleRect(event, direction);
     } else if (direction == dir_mid) {
         moveRect(event->pos());
@@ -371,6 +371,52 @@ Mat ImageWidget::QImage2Mat(const QImage &src) {
         case QImage::Format_RGB32:
             mat = Mat(src.height(), src.width(),
                       CV_8UC4, (void *) src.constBits(), src.bytesPerLine());
+            break;
+        case QImage::Format_Invalid:
+            break;
+        case QImage::Format_Mono:
+            break;
+        case QImage::Format_MonoLSB:
+            break;
+        case QImage::Format_Indexed8:
+            break;
+        case QImage::Format_ARGB32:
+            break;
+        case QImage::Format_RGB16:
+            break;
+        case QImage::Format_ARGB8565_Premultiplied:
+            break;
+        case QImage::Format_RGB666:
+            break;
+        case QImage::Format_ARGB6666_Premultiplied:
+            break;
+        case QImage::Format_RGB555:
+            break;
+        case QImage::Format_ARGB8555_Premultiplied:
+            break;
+        case QImage::Format_RGB444:
+            break;
+        case QImage::Format_ARGB4444_Premultiplied:
+            break;
+        case QImage::Format_RGBX8888:
+            break;
+        case QImage::Format_RGBA8888:
+            break;
+        case QImage::Format_RGBA8888_Premultiplied:
+            break;
+        case QImage::Format_BGR30:
+            break;
+        case QImage::Format_A2BGR30_Premultiplied:
+            break;
+        case QImage::Format_RGB30:
+            break;
+        case QImage::Format_A2RGB30_Premultiplied:
+            break;
+        case QImage::Format_Alpha8:
+            break;
+        case QImage::Format_Grayscale8:
+            break;
+        case QImage::NImageFormats:
             break;
     }
     return mat;
