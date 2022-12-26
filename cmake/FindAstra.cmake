@@ -59,7 +59,6 @@ if (NOT ASTRA_SDK_BUILD)
             PATH_SUFFIXES include
             PATHS ${FIND_ASTRA_PATHS})
 
-    # todo include headers --- ok
     message(ASTRA_INCLUDE_DIR: ${ASTRA_INCLUDE_DIR})
 
     set(ASTRA_FIND_COMPONENTS

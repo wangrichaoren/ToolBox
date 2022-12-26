@@ -26,18 +26,23 @@ ENDIF ()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
-#message(STATUS ${CMAKE_RUNTIME_OUTPUT_DIRECTORY})
+
+# qt相关
 set(CMAKE_AUTOMOC ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTORCC ON)
-
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
-find_package(OpenCV)
-find_package(SFML COMPONENTS graphics window system)
-# astra 相机驱动
+find_package(OpenCV REQUIRED)
+# 导入astra相机驱动
 find_package(Astra REQUIRED)
+# ------导入pcl------
+find_package(PCL REQUIRED)
+include_directories(${PCL_INCLUDE_DIRS})
+link_directories(${PCL_LIBRARY_DIRS})
+add_definitions(${PCL_DEFINITIONS})
+# ------------------
 
 set(UI_SOURCE ${PROJECT_SOURCE_DIR}/src)
 set(QT_LIBRARIES ${Qt5Core_LIBRARIES} ${Qt5Gui_LIBRARIES} ${Qt5Widgets_LIBRARIES})
@@ -63,9 +68,12 @@ set(LIND2DUP src/line2Dup.cpp src/face_detect.cpp src/face_detect.h src/face_det
 set(YAMLCPP ${PROJECT_SOURCE_DIR}/3rdParty/lib/yaml-cpp/libyaml-cpp.a)
 set(ARCSOFT_FACE "/home/wrc/Desktop/ToolBox/3rdParty/lib/arcsoft_face/libarcsoft_face.so" "/home/wrc/Desktop/ToolBox/3rdParty/lib/arcsoft_face/libarcsoft_face_engine.so")
 
-#add_executable(ToolBox main.cpp ${SOURCE} ${RESOURCES} ${LIND2DUP})
-add_executable(test test.cpp)
+add_executable(ToolBox main.cpp ${SOURCE} ${RESOURCES} ${LIND2DUP})
+add_executable(test_pcl test/test_pcl.cpp)
+#add_executable(testAstraCam test/testAstraCam.cpp src/AstraCamera.cpp)
 
-#target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES})
-message(${SFML_LIBRARIES})
-target_link_libraries(test ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${SFML_LIBRARIES})
+target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${ASTRA_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(test_pcl  ${PCL_LIBRARIES})
+#target_link_libraries(testAstraCam  ${ASTRA_LIBRARIES} ${OpenCV_LIBS})
+
+install(TARGETS ToolBox RUNTIME DESTINATION bin)
