@@ -27,6 +27,10 @@ face_detect::face_detect(QWidget *parent) :
     // 绑定打开相机按钮
     connect(ui->pushButtonOpenCam, &QPushButton::clicked, [=] {
         qDebug("打开相机");
+        if (cam->isOpen()){
+            showMessageBox(this,"相机已开启");
+            return ;
+        }
         ENUM_CAM cam_type;
         if (ui->radioButton->isChecked()) {
             cam_type = local_cam;

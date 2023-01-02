@@ -9,6 +9,7 @@
 #include "utils.h"
 #include "temple_match.h"
 #include "face_detect.h"
+#include "calib.h"
 
 
 admin_system::admin_system(QWidget *parent) :
@@ -16,10 +17,12 @@ admin_system::admin_system(QWidget *parent) :
     ui->setupUi(this);
     setIconToLabel(ui->label_1, ":/icons/星空.png");
     setIconToLabel(ui->label_2, ":/icons/沙滩.png");
+    setIconToLabel(ui->label_3, ":/icons/秋天.png");
 
 //    connect(ui->pushButton_1,)
     connect(ui->pushButton_1, &QPushButton::clicked, this, &admin_system::clickTempleMatchBtn);
     connect(ui->pushButton_2, &QPushButton::clicked, this, &admin_system::clickFaceDetBtn);
+    connect(ui->pushButton_3, &QPushButton::clicked, this, &admin_system::clickCalibBtn);
 }
 
 admin_system::~admin_system() {
@@ -40,9 +43,19 @@ void admin_system::clickTempleMatchBtn() {
 void admin_system::clickFaceDetBtn() {
     qDebug("打开人脸识别窗口");
     this->setEnabled(false);
-    auto fd=new face_detect(this);
+    auto fd = new face_detect(this);
     fd->show();
     fd->exec();
     delete fd;
+    this->setEnabled(true);
+}
+
+void admin_system::clickCalibBtn() {
+    qDebug("打开相机标定窗口");
+    this->setEnabled(false);
+    auto cb = new calib(this);
+    cb->show();
+    cb->exec();
+    delete cb;
     this->setEnabled(true);
 }

@@ -22,6 +22,8 @@ public:
 
     void clickFaceDetBtn();
 
+    void clickCalibBtn();
+
     ~admin_system() override;
 
 private:

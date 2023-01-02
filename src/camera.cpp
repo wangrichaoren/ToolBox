@@ -53,3 +53,10 @@ void camera::read() {
 
 
 }
+
+bool camera::isOpen() {
+    if (capture.isOpened()) {
+        return true;
+    }
+    return false;
+}

@@ -130,6 +130,11 @@ public:
         pushButton_3 = new QPushButton(scrollAreaWidgetContents);
         pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
         pushButton_3->setMinimumSize(QSize(0, 80));
+        QFont font1;
+        font1.setPointSize(16);
+        font1.setBold(true);
+        font1.setWeight(75);
+        pushButton_3->setFont(font1);
 
         gridLayout_2->addWidget(pushButton_3, 5, 2, 1, 1);
 
@@ -223,7 +228,7 @@ public:
         label_4->setText(QApplication::translate("admin_system", "TextLabel", Q_NULLPTR));
         pushButton_4->setText(QApplication::translate("admin_system", "\346\234\252\345\274\200\345\217\221", Q_NULLPTR));
         pushButton_2->setText(QApplication::translate("admin_system", "\344\272\272\350\204\270\350\257\206\345\210\253", Q_NULLPTR));
-        pushButton_3->setText(QApplication::translate("admin_system", "\346\234\252\345\274\200\345\217\221", Q_NULLPTR));
+        pushButton_3->setText(QApplication::translate("admin_system", "\347\233\270\346\234\272\346\240\207\345\256\232", Q_NULLPTR));
         pushButton_1->setText(QApplication::translate("admin_system", "\346\250\241\346\235\277\345\214\271\351\205\215", Q_NULLPTR));
         label_1->setText(QApplication::translate("admin_system", "TextLabel.....", Q_NULLPTR));
         label_3->setText(QApplication::translate("admin_system", "TextLabel", Q_NULLPTR));

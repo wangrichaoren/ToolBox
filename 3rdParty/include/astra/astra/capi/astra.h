@@ -17,7 +17,7 @@
 #ifndef ASTRA_H
 #define ASTRA_H
 
-#include <astra_core/capi/astra_core.h>
+#include <astra/astra_core/capi/astra_core.h>
 #include "astra_ctypes.h"
 #include "streams/body_capi.h"
 #include "streams/image_capi.h"

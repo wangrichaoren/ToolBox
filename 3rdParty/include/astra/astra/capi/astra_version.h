@@ -17,8 +17,8 @@
 #ifndef ASTRA_VERSION_H
 #define ASTRA_VERSION_H
 
-#include <astra_core/capi/astra_defines.h>
-#include <astra_core/capi/astra_types.h>
+#include <astra/astra_core/capi/astra_defines.h>
+#include <astra/astra_core/capi/astra_types.h>
 
 ASTRA_BEGIN_DECLS
 

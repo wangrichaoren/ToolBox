@@ -34,6 +34,7 @@ public:
 
     void read();
 
+    bool isOpen();
 
 private:
     bool is_open;
