@@ -12,6 +12,15 @@ calib::calib(QWidget *parent) :
         QDialog(parent), ui(new Ui::calib) {
     ui->setupUi(this);
 
+    ui->pushButton_2->setEnabled(false);
+    ui->pushButton_4->setEnabled(false);
+
+    // 默认选择棋盘格
+    ui->radioButton->setChecked(true);
+    // todo 圆网格未实现
+    ui->radioButton_2->setEnabled(false);
+
+    setFocusPolicy(Qt::StrongFocus);
     ui->graphicsView->setHorizontalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
     ui->graphicsView->setVerticalScrollBarPolicy(Qt::ScrollBarAlwaysOff);
 
@@ -36,9 +45,64 @@ calib::calib(QWidget *parent) :
 //    connect(visual_thread, &VisualThread::signIsStartSteam, visual_thread, &VisualThread::slotIsStartSteam,
 //            Qt::DirectConnection);
 
+    connect(ui->pushButton_4, &QPushButton::clicked, [=] { isCap = true; });
+
+    connect(ui->pushButton_2, &QPushButton::clicked, [=] {
+        cout << "标定计算..." << endl;
+        // 清空进度条
+        value = 0;
+        ui->progressBar->setValue(0);
+    });
+
+    connect(ui->progressBar, &QProgressBar::valueChanged, [=](int v) {
+        if (v == 100) {
+            ui->pushButton_2->setEnabled(true);
+        } else if (v == 0) {
+            ui->pushButton_2->setEnabled(false);
+        }
+    });
+
     connect(visual_thread, &VisualThread::sign_send_mat, [=](cv::Mat frame) {
         scene->clear();
+        int col = ui->lineEdit->text().toInt();
+        int row = ui->lineEdit_2->text().toInt();
+        int dis = ui->lineEdit_3->text().toInt();
+
+        // color
+        cv::Mat originMat;
         cvtColor(frame, frame, cv::COLOR_BGR2RGB);
+        frame.copyTo(originMat);
+        // gray
+        cv::Mat gray;
+        cvtColor(frame, gray, cv::COLOR_RGB2GRAY);
+
+        std::vector<cv::Point2f> corner;
+
+        bool f = cv::findChessboardCorners(gray, cv::Size(col, row), corner,
+                                           cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_FAST_CHECK |
+                                           cv::CALIB_CB_NORMALIZE_IMAGE);
+
+        if (f) {
+            ui->pushButton_4->setEnabled(true);
+            cv::TermCriteria criteria(cv::TermCriteria::EPS | cv::TermCriteria::MAX_ITER, 30, 0.001);
+            cv::cornerSubPix(gray, corner, cv::Size(11, 11), cv::Size(-1, -1), criteria);
+            cv::drawChessboardCorners(frame, cv::Size(col, row), corner, f);
+
+            // 只有检测到角点才能拍照
+            if (isCap) {
+                cv::bitwise_not(frame, frame);
+                isCap = false;
+                value += 5;
+                ui->progressBar->setValue(value);
+                if (value == 100) {
+                    value = 100;
+                }
+                cout << "标定进度: " << value << "%" << endl;
+            }
+        } else {
+            ui->pushButton_4->setEnabled(false);
+        }
+
         QImage q_img((const unsigned char *) frame.data, frame.cols, frame.rows, frame.step,
                      QImage::Format_RGB888);
         auto iw = q_img.width();
@@ -62,6 +126,12 @@ calib::calib(QWidget *parent) :
         ui->graphicsView->setScene(scene);
     });
 
+    connect(ui->progressBar, &QProgressBar::valueChanged, [=](int v) {
+        if (v == 100) {
+            ui->pushButton_2->setEnabled(true);
+        }
+    });
+
     connect(ui->pushButton_1, &QPushButton::clicked, [=] {
         isOpen = !isOpen;
         if (isOpen) {
@@ -74,13 +144,21 @@ calib::calib(QWidget *parent) :
             scene->clear();
             m_thread->quit();
             m_thread->wait();
+            ui->pushButton_4->setEnabled(false);
             cout << "thread is running?>>>" << m_thread->isRunning() << endl;
         }
     });
 
+    connect(ui->pushButton_3, &QPushButton::clicked, [=] {
+        this->close();
+    });
+
+
 }
 
 calib::~calib() {
+    m_thread->quit();
+    m_thread->wait();
     delete m_thread;
     delete m_timer;
     delete visual_thread;
@@ -88,6 +166,25 @@ calib::~calib() {
     delete ui;
     cout << "xxx calib ui" << endl;
 }
+
+//
+//void calib::keyPressEvent(QKeyEvent *event) {
+//    // 拍照快捷键 [space]
+//    auto k = event->key();
+//    if (k == 32) {
+//        cout << "按下space" << endl;
+//        isCap = true;
+//    } else if (k == 16777216) {
+//        this->close();
+//    }
+//}
+//
+//void calib::keyReleaseEvent(QKeyEvent *event) {
+//    if (event->key() == 32) {
+//        cout << "松开space" << endl;
+//        isCap = false;
+//    }
+//}
 
 void VisualThread::timeOutSlot() {
     cam->updateFrame();

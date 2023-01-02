@@ -11,6 +11,9 @@
 #include <iostream>
 #include <QGraphicsScene>
 #include <QTimer>
+#include "utils.h"
+#include <QKeyEvent>
+#include <opencv2/calib3d.hpp>
 
 
 using namespace std;
@@ -39,7 +42,6 @@ signals:
 
 private:
     AstraCamera *cam;
-//    bool isStop;
 };
 
 
@@ -48,6 +50,9 @@ Q_OBJECT
 
 public:
     explicit calib(QWidget *parent = nullptr);
+
+//    virtual void keyPressEvent(QKeyEvent *event);
+//    virtual void keyReleaseEvent(QKeyEvent *event);
 
     ~calib() override;
 
@@ -59,6 +64,9 @@ private:
     VisualThread *visual_thread;
     QGraphicsScene *scene;
     bool isOpen = false;
+//    bool isCalib = false;
+    bool isCap = false;
+    int value = 0;
 
 signals:
 
