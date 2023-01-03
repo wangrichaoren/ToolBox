@@ -41,17 +41,29 @@ calib::calib(QWidget *parent) :
     connect(m_timer, SIGNAL(timeout()), visual_thread,
             SLOT(timeOutSlot()), Qt::DirectConnection);
 
-    // 相机流相关
-//    connect(visual_thread, &VisualThread::signIsStartSteam, visual_thread, &VisualThread::slotIsStartSteam,
-//            Qt::DirectConnection);
-
     connect(ui->pushButton_4, &QPushButton::clicked, [=] { isCap = true; });
 
     connect(ui->pushButton_2, &QPushButton::clicked, [=] {
         cout << "标定计算..." << endl;
+        cv::calibrateCamera(objpoints, imgpoints, size1, cameraMatrix, distCoeffs, r, t);
+
+        cv::FileStorage fs("../config/calib.yaml", cv::FileStorage::WRITE);
+        fs << "ImageWidth" << size1.width;
+        fs << "ImageHeight" << size1.height;
+        fs << "CameraMatrix" << cameraMatrix << "DistCoeffs" << distCoeffs;
+        time_t rawtime;
+        time(&rawtime);
+        fs << "CalibrationDate" << asctime(localtime(&rawtime));
+        fs.release();
+
+        showMessageBox(this,"相机标定完成!");
+
         // 清空进度条
         value = 0;
         ui->progressBar->setValue(0);
+        // 清掉数组列表
+        objpoints.clear();
+        imgpoints.clear();
     });
 
     connect(ui->progressBar, &QProgressBar::valueChanged, [=](int v) {
@@ -63,6 +75,12 @@ calib::calib(QWidget *parent) :
     });
 
     connect(visual_thread, &VisualThread::sign_send_mat, [=](cv::Mat frame) {
+        if (isFirst) {
+            size1.height = frame.rows;
+            size1.width = frame.cols;
+            isFirst = false;
+        }
+
         scene->clear();
         int col = ui->lineEdit->text().toInt();
         int row = ui->lineEdit_2->text().toInt();
@@ -84,25 +102,35 @@ calib::calib(QWidget *parent) :
 
         if (f) {
             ui->pushButton_4->setEnabled(true);
+
             cv::TermCriteria criteria(cv::TermCriteria::EPS | cv::TermCriteria::MAX_ITER, 30, 0.001);
             cv::cornerSubPix(gray, corner, cv::Size(11, 11), cv::Size(-1, -1), criteria);
             cv::drawChessboardCorners(frame, cv::Size(col, row), corner, f);
 
+            std::vector<cv::Point3f> objp;
+            // 初始化点，cv::Point3f(j, i, 0) 保存的是 x,y,z 坐标。
+            for (int i{0}; i < col; i++) {
+                for (int j{0}; j < row; j++) {
+                    objp.push_back(cv::Point3f(j * dis, i * dis, 0));
+                }
+            }
+
             // 只有检测到角点才能拍照
             if (isCap) {
                 cv::bitwise_not(frame, frame);
+                // todo 这里做角点的push back操作....
+                imgpoints.push_back(corner);
+                objpoints.push_back(objp);
+
                 isCap = false;
                 value += 5;
                 ui->progressBar->setValue(value);
-                if (value == 100) {
-                    value = 100;
-                }
                 cout << "标定进度: " << value << "%" << endl;
             }
         } else {
             ui->pushButton_4->setEnabled(false);
         }
-
+        // 用于控件显示
         QImage q_img((const unsigned char *) frame.data, frame.cols, frame.rows, frame.step,
                      QImage::Format_RGB888);
         auto iw = q_img.width();
@@ -167,24 +195,6 @@ calib::~calib() {
     cout << "xxx calib ui" << endl;
 }
 
-//
-//void calib::keyPressEvent(QKeyEvent *event) {
-//    // 拍照快捷键 [space]
-//    auto k = event->key();
-//    if (k == 32) {
-//        cout << "按下space" << endl;
-//        isCap = true;
-//    } else if (k == 16777216) {
-//        this->close();
-//    }
-//}
-//
-//void calib::keyReleaseEvent(QKeyEvent *event) {
-//    if (event->key() == 32) {
-//        cout << "松开space" << endl;
-//        isCap = false;
-//    }
-//}
 
 void VisualThread::timeOutSlot() {
     cam->updateFrame();

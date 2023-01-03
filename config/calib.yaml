@@ -1,0 +1,18 @@
+%YAML:1.0
+---
+ImageWidth: 640
+ImageHeight: 480
+CameraMatrix: !!opencv-matrix
+   rows: 3
+   cols: 3
+   dt: d
+   data: [ 8.7152157967372148e+01, 0., 3.1950001165359771e+02, 0.,
+       3.5072846783706171e+02, 2.3949993846027792e+02, 0., 0., 1. ]
+DistCoeffs: !!opencv-matrix
+   rows: 1
+   cols: 5
+   dt: d
+   data: [ -3.7385516672618968e-02, 2.6018664203706477e-04,
+       -4.4490137865621726e-05, 9.0198154943850473e-03,
+       -4.4120648102122719e-07 ]
+CalibrationDate: "Tue Jan  3 18:08:31 2023\n"

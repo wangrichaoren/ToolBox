@@ -14,6 +14,7 @@
 #include "utils.h"
 #include <QKeyEvent>
 #include <opencv2/calib3d.hpp>
+#include <yaml-cpp/yaml.h>
 
 
 using namespace std;
@@ -51,9 +52,6 @@ Q_OBJECT
 public:
     explicit calib(QWidget *parent = nullptr);
 
-//    virtual void keyPressEvent(QKeyEvent *event);
-//    virtual void keyReleaseEvent(QKeyEvent *event);
-
     ~calib() override;
 
 
@@ -64,9 +62,20 @@ private:
     VisualThread *visual_thread;
     QGraphicsScene *scene;
     bool isOpen = false;
+    bool isFirst = true;
 //    bool isCalib = false;
     bool isCap = false;
     int value = 0;
+    cv::Size size1;
+
+    // 输出的相机内参、畸变等信息
+    cv::Mat cameraMatrix;
+    cv::Mat distCoeffs;
+    cv::Mat t;
+    cv::Mat r;
+
+    std::vector<std::vector<cv::Point3f> > objpoints;
+    std::vector<std::vector<cv::Point2f> > imgpoints;
 
 signals:
 

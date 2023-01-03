@@ -264,3 +264,16 @@
 2023-01-03 00:14:41,189 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
 2023-01-03 00:20:03,914 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
 2023-01-03 00:22:33,903 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 00:28:30,512 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 14:05:36,907 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 14:06:52,196 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 16:39:25,952 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 17:08:11,936 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 17:24:34,370 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 17:33:13,639 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 17:42:08,794 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 17:44:19,628 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 17:50:44,154 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 17:51:39,950 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 17:57:54,058 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
+2023-01-03 18:07:15,846 ERROR [shared_library_unix] load_library failed: libopencv_imgproc.so.2.4: 无法打开共享对象文件: 没有那个文件或目录
