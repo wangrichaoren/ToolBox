@@ -110,7 +110,7 @@ public:
         pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
         pushButton_4->setMinimumSize(QSize(0, 80));
         QFont font;
-        font.setPointSize(15);
+        font.setPointSize(16);
         font.setBold(true);
         font.setWeight(75);
         pushButton_4->setFont(font);
@@ -132,11 +132,7 @@ public:
         pushButton_3 = new QPushButton(scrollAreaWidgetContents);
         pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
         pushButton_3->setMinimumSize(QSize(0, 80));
-        QFont font2;
-        font2.setPointSize(16);
-        font2.setBold(true);
-        font2.setWeight(75);
-        pushButton_3->setFont(font2);
+        pushButton_3->setFont(font);
 
         gridLayout_2->addWidget(pushButton_3, 5, 2, 1, 1);
 
@@ -228,7 +224,7 @@ public:
         admin_system->setWindowTitle(QCoreApplication::translate("admin_system", "admin_system", nullptr));
         label_2->setText(QCoreApplication::translate("admin_system", "TextLabel", nullptr));
         label_4->setText(QCoreApplication::translate("admin_system", "TextLabel", nullptr));
-        pushButton_4->setText(QCoreApplication::translate("admin_system", "PCL", nullptr));
+        pushButton_4->setText(QCoreApplication::translate("admin_system", "\347\202\271\344\272\221\346\237\245\347\234\213\345\231\250", nullptr));
         pushButton_2->setText(QCoreApplication::translate("admin_system", "\344\272\272\350\204\270\350\257\206\345\210\253", nullptr));
         pushButton_3->setText(QCoreApplication::translate("admin_system", "\347\233\270\346\234\272\346\240\207\345\256\232", nullptr));
         pushButton_1->setText(QCoreApplication::translate("admin_system", "\346\250\241\346\235\277\345\214\271\351\205\215", nullptr));

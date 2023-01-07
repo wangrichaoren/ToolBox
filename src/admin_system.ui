@@ -143,13 +143,13 @@
          </property>
          <property name="font">
           <font>
-           <pointsize>15</pointsize>
+           <pointsize>16</pointsize>
            <weight>75</weight>
            <bold>true</bold>
           </font>
          </property>
          <property name="text">
-          <string>PCL</string>
+          <string>点云查看器</string>
          </property>
         </widget>
        </item>

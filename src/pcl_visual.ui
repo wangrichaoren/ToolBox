@@ -11,16 +11,23 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>pcl_visual</string>
+   <string>点云查看器</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0">
-    <widget class="QVTKWidget" name="qvtkWidget"/>
-   </item>
    <item row="1" column="0">
     <widget class="QPushButton" name="pushButton">
      <property name="text">
-      <string>PushButton</string>
+      <string>打开文件</string>
+     </property>
+    </widget>
+   </item>
+   <item row="0" column="0">
+    <widget class="QVTKWidget" name="qvtkWidget"/>
+   </item>
+   <item row="2" column="0">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>格式转换</string>
      </property>
     </widget>
    </item>

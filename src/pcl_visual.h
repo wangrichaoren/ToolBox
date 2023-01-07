@@ -6,13 +6,12 @@
 #define TOOLBOX_PCL_VISUAL_H
 
 #include <QDialog>
-
-#pragma once
-
+//#pragma once
 #include <QWidget>
 #include <QFileDialog>
 #include <vtkRenderWindow.h>
 #include<pcl/io/pcd_io.h>
+#include<pcl/io/ply_io.h>
 #include<pcl/point_types.h>
 #include<pcl/visualization/pcl_visualizer.h>
 
@@ -31,13 +30,18 @@ public:
 
 private:
     Ui::pcl_visual *ui;
-    pcl::PointCloud<pcl::PointXYZ>::Ptr cloud;
+    pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud;
     boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer;
+    pcl::PLYReader ply_reader;
+    pcl::PCDReader pcd_reader;
 
     void initialVtkWidget();
 
 private slots:
+
     void onOpen();
+
+    void onFormatConversion();
 
 };
 
