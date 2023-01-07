@@ -2,7 +2,7 @@
 #include <iostream>
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 #include <chrono>
 
@@ -52,36 +52,36 @@ namespace line2Dup {
             case 128:
                 return 7;
             default:
-                CV_Error(Error::StsBadArg, "Invalid value of quantized parameter");
+                CV_Error(cv::Error::StsBadArg, "Invalid value of quantized parameter");
                 return -1; //avoid warning
         }
     }
 
-    void Feature::read(const FileNode &fn) {
-        FileNodeIterator fni = fn.begin();
+    void Feature::read(const cv::FileNode &fn) {
+        cv::FileNodeIterator fni = fn.begin();
         fni >> x >> y >> label;
     }
 
-    void Feature::write(FileStorage &fs) const {
+    void Feature::write(cv::FileStorage &fs) const {
         fs << "[:" << x << y << label << "]";
     }
 
-    void Template::read(const FileNode &fn) {
+    void Template::read(const cv::FileNode &fn) {
         width = fn["width"];
         height = fn["height"];
         tl_x = fn["tl_x"];
         tl_y = fn["tl_y"];
         pyramid_level = fn["pyramid_level"];
 
-        FileNode features_fn = fn["features"];
+        cv::FileNode features_fn = fn["features"];
         features.resize(features_fn.size());
-        FileNodeIterator it = features_fn.begin(), it_end = features_fn.end();
+        cv::FileNodeIterator it = features_fn.begin(), it_end = features_fn.end();
         for (int i = 0; it != it_end; ++it, ++i) {
             features[i].read(*it);
         }
     }
 
-    void Template::write(FileStorage &fs) const {
+    void Template::write(cv::FileStorage &fs) const {
         fs << "width" << width;
         fs << "height" << height;
         fs << "tl_x" << tl_x;
@@ -96,7 +96,7 @@ namespace line2Dup {
         fs << "]"; // features
     }
 
-    static Rect cropTemplates(std::vector<Template> &templates) {
+    static cv::Rect cropTemplates(std::vector<Template> &templates) {
         int min_x = std::numeric_limits<int>::max();
         int min_y = std::numeric_limits<int>::max();
         int max_x = std::numeric_limits<int>::min();
@@ -136,7 +136,7 @@ namespace line2Dup {
             }
         }
 
-        return Rect(min_x, min_y, max_x - min_x, max_y - min_y);
+        return cv::Rect(min_x, min_y, max_x - min_x, max_y - min_y);
     }
 
     bool ColorGradientPyramid::selectScatteredFeatures(const std::vector<Candidate> &candidates,
@@ -191,12 +191,12 @@ namespace line2Dup {
 *                                                         Color gradient ColorGradient                                                                        *
 \****************************************************************************************/
 
-    void hysteresisGradient(Mat &magnitude, Mat &quantized_angle,
-                            Mat &angle, float threshold) {
+    void hysteresisGradient(cv::Mat &magnitude, cv::Mat &quantized_angle,
+                            cv::Mat &angle, float threshold) {
         // Quantize 360 degree range of orientations into 16 buckets
         // Note that [0, 11.25), [348.75, 360) both get mapped in the end to label 0,
         // for stability of horizontal and vertical features.
-        Mat_<unsigned char> quantized_unfiltered;
+        cv::Mat_<unsigned char> quantized_unfiltered;
         angle.convertTo(quantized_unfiltered, CV_8U, 16.0 / 360.0);
 
         // Zero out top and bottom rows
@@ -219,7 +219,7 @@ namespace line2Dup {
 
         // Filter the raw quantized image. Only accept pixels where the magnitude is above some
         // threshold, and there is local agreement on the quantization.
-        quantized_angle = Mat::zeros(angle.size(), CV_8U);
+        quantized_angle = cv::Mat::zeros(angle.size(), CV_8U);
         for (int r = 1; r < angle.rows - 1; ++r) {
             float *mag_r = magnitude.ptr<float>(r);
 
@@ -262,18 +262,18 @@ namespace line2Dup {
         }
     }
 
-    static void quantizedOrientations(const Mat &src, Mat &magnitude,
-                                      Mat &angle, Mat &angle_ori, float threshold) {
-        Mat smoothed;
+    static void quantizedOrientations(const cv::Mat &src, cv::Mat &magnitude,
+                                      cv::Mat &angle, cv::Mat &angle_ori, float threshold) {
+        cv::Mat smoothed;
         // Compute horizontal and vertical image derivatives on all color channels separately
         static const int KERNEL_SIZE = 7;
         // For some reason cvSmooth/cv::GaussianBlur, cvSobel/cv::Sobel have different defaults for border handling...
-        GaussianBlur(src, smoothed, Size(KERNEL_SIZE, KERNEL_SIZE), 0, 0, BORDER_REPLICATE);
+        GaussianBlur(src, smoothed, cv::Size(KERNEL_SIZE, KERNEL_SIZE), 0, 0, cv::BORDER_REPLICATE);
 
         if (src.channels() == 1) {
-            Mat sobel_dx, sobel_dy, sobel_ag;
-            Sobel(smoothed, sobel_dx, CV_32F, 1, 0, 3, 1.0, 0.0, BORDER_REPLICATE);
-            Sobel(smoothed, sobel_dy, CV_32F, 0, 1, 3, 1.0, 0.0, BORDER_REPLICATE);
+            cv::Mat sobel_dx, sobel_dy, sobel_ag;
+            Sobel(smoothed, sobel_dx, CV_32F, 1, 0, 3, 1.0, 0.0, cv::BORDER_REPLICATE);
+            Sobel(smoothed, sobel_dy, CV_32F, 0, 1, 3, 1.0, 0.0, cv::BORDER_REPLICATE);
             magnitude = sobel_dx.mul(sobel_dx) + sobel_dy.mul(sobel_dy);
             phase(sobel_dx, sobel_dy, sobel_ag, true);
             hysteresisGradient(magnitude, angle, sobel_ag, threshold * threshold);
@@ -284,15 +284,15 @@ namespace line2Dup {
             magnitude.create(src.size(), CV_32F);
 
             // Allocate temporary buffers
-            Size size = src.size();
-            Mat sobel_3dx;              // per-channel horizontal derivative
-            Mat sobel_3dy;              // per-channel vertical derivative
-            Mat sobel_dx(size, CV_32F); // maximum horizontal derivative
-            Mat sobel_dy(size, CV_32F); // maximum vertical derivative
-            Mat sobel_ag;               // final gradient orientation (unquantized)
+            cv::Size size = src.size();
+            cv::Mat sobel_3dx;              // per-channel horizontal derivative
+            cv::Mat sobel_3dy;              // per-channel vertical derivative
+            cv::Mat sobel_dx(size, CV_32F); // maximum horizontal derivative
+            cv::Mat sobel_dy(size, CV_32F); // maximum vertical derivative
+            cv::Mat sobel_ag;               // final gradient orientation (unquantized)
 
-            Sobel(smoothed, sobel_3dx, CV_16S, 1, 0, 3, 1.0, 0.0, BORDER_REPLICATE);
-            Sobel(smoothed, sobel_3dy, CV_16S, 0, 1, 3, 1.0, 0.0, BORDER_REPLICATE);
+            Sobel(smoothed, sobel_3dx, CV_16S, 1, 0, 3, 1.0, 0.0, cv::BORDER_REPLICATE);
+            Sobel(smoothed, sobel_3dy, CV_16S, 0, 1, 3, 1.0, 0.0, cv::BORDER_REPLICATE);
 
             short *ptrx = (short *) sobel_3dx.data;
             short *ptry = (short *) sobel_3dy.data;
@@ -347,7 +347,7 @@ namespace line2Dup {
 
     }
 
-    ColorGradientPyramid::ColorGradientPyramid(const Mat &_src, const Mat &_mask,
+    ColorGradientPyramid::ColorGradientPyramid(const cv::Mat &_src, const cv::Mat &_mask,
                                                float _weak_threshold, size_t _num_features,
                                                float _strong_threshold)
             : src(_src),
@@ -369,30 +369,30 @@ namespace line2Dup {
         ++pyramid_level;
 
         // Downsample the current inputs
-        Size size(src.cols / 2, src.rows / 2);
-        Mat next_src;
+        cv::Size size(src.cols / 2, src.rows / 2);
+        cv::Mat next_src;
         cv::pyrDown(src, next_src, size);
         src = next_src;
 
         if (!mask.empty()) {
-            Mat next_mask;
-            resize(mask, next_mask, size, 0.0, 0.0, INTER_NEAREST);
+            cv::Mat next_mask;
+            resize(mask, next_mask, size, 0.0, 0.0, cv::INTER_NEAREST);
             mask = next_mask;
         }
 
         update();
     }
 
-    void ColorGradientPyramid::quantize(Mat &dst) const {
-        dst = Mat::zeros(angle.size(), CV_8U);
+    void ColorGradientPyramid::quantize(cv::Mat &dst) const {
+        dst = cv::Mat::zeros(angle.size(), CV_8U);
         angle.copyTo(dst, mask);
     }
 
     bool ColorGradientPyramid::extractTemplate(Template &templ) const {
         // Want features on the border to distinguish from background
-        Mat local_mask;
+        cv::Mat local_mask;
         if (!mask.empty()) {
-            erode(mask, local_mask, Mat(), Point(-1, -1), 1, BORDER_REPLICATE);
+            erode(mask, local_mask, cv::Mat(), cv::Point(-1, -1), 1, cv::BORDER_REPLICATE);
 //        subtract(mask, local_mask, local_mask);
         }
 
@@ -488,8 +488,8 @@ namespace line2Dup {
         return CG_NAME;
     }
 
-    void ColorGradient::read(const FileNode &fn) {
-        String type = fn["type"];
+    void ColorGradient::read(const cv::FileNode &fn) {
+        cv::String type = fn["type"];
         CV_Assert(type == CG_NAME);
 
         weak_threshold = fn["weak_threshold"];
@@ -497,7 +497,7 @@ namespace line2Dup {
         strong_threshold = fn["strong_threshold"];
     }
 
-    void ColorGradient::write(FileStorage &fs) const {
+    void ColorGradient::write(cv::FileStorage &fs) const {
         fs << "type" << CG_NAME;
         fs << "weak_threshold" << weak_threshold;
         fs << "num_features" << int(num_features);
@@ -539,9 +539,9 @@ namespace line2Dup {
         }
     }
 
-    static void spread(const Mat &src, Mat &dst, int T) {
+    static void spread(const cv::Mat &src, cv::Mat &dst, int T) {
         // Allocate and zero-initialize spread (OR'ed) image
-        dst = Mat::zeros(src.size(), CV_8U);
+        dst = cv::Mat::zeros(src.size(), CV_8U);
 
         // Fill in spread gradient image (section 2.3)
         for (int r = 0; r < T; ++r) {
@@ -572,7 +572,7 @@ namespace line2Dup {
                                                       0, LUT3, 0, 0, 0, 0, LUT3, LUT3, LUT3, LUT3, 4, 4, 4, 4, 4, 4, 4,
                                                       4};
 
-    static void computeResponseMaps(const Mat &src, std::vector<Mat> &response_maps) {
+    static void computeResponseMaps(const cv::Mat &src, std::vector<cv::Mat> &response_maps) {
         CV_Assert((src.rows * src.cols) % 16 == 0);
 
         // Allocate response maps
@@ -580,8 +580,8 @@ namespace line2Dup {
         for (int i = 0; i < 8; ++i)
             response_maps[i].create(src.size(), CV_8U);
 
-        Mat lsb4(src.size(), CV_8U);
-        Mat msb4(src.size(), CV_8U);
+        cv::Mat lsb4(src.size(), CV_8U);
+        cv::Mat msb4(src.size(), CV_8U);
 
         for (int r = 0; r < src.rows; ++r) {
             const uchar *src_r = src.ptr(r);
@@ -678,7 +678,7 @@ namespace line2Dup {
         }
     }
 
-    static void linearize(const Mat &response_map, Mat &linearized, int T) {
+    static void linearize(const cv::Mat &response_map, cv::Mat &linearized, int T) {
         CV_Assert(response_map.rows % T == 0);
         CV_Assert(response_map.cols % T == 0);
 
@@ -708,10 +708,10 @@ namespace line2Dup {
 *                                                             Linearized similarities                                                                    *
 \****************************************************************************************/
 
-    static const unsigned char *accessLinearMemory(const std::vector<Mat> &linear_memories,
+    static const unsigned char *accessLinearMemory(const std::vector<cv::Mat> &linear_memories,
                                                    const Feature &f, int T, int W) {
         // Retrieve the TxT grid of linear memories associated with the feature label
-        const Mat &memory_grid = linear_memories[f.label];
+        const cv::Mat &memory_grid = linear_memories[f.label];
         CV_DbgAssert(memory_grid.rows == T * T);
         CV_DbgAssert(f.x >= 0);
         CV_DbgAssert(f.y >= 0);
@@ -732,8 +732,8 @@ namespace line2Dup {
         return memory + lm_index;
     }
 
-    static void similarity(const std::vector<Mat> &linear_memories, const Template &templ,
-                           Mat &dst, Size size, int T) {
+    static void similarity(const std::vector<cv::Mat> &linear_memories, const Template &templ,
+                           cv::Mat &dst, cv::Size size, int T) {
         // we only have one modality, so 8192*2, due to mipp, back to 8192
         CV_Assert(templ.features.size() < 8192);
 
@@ -751,7 +751,7 @@ namespace line2Dup {
 
         int template_positions = span_y * W + span_x + 1; // why add 1?
 
-        dst = Mat::zeros(H, W, CV_16U);
+        dst = cv::Mat::zeros(H, W, CV_16U);
         short *dst_ptr = dst.ptr<short>();
         mipp::Reg<uint8_t> zero_v(uint8_t(0));
 
@@ -783,12 +783,12 @@ namespace line2Dup {
         }
     }
 
-    static void similarityLocal(const std::vector<Mat> &linear_memories, const Template &templ,
-                                Mat &dst, Size size, int T, Point center) {
+    static void similarityLocal(const std::vector<cv::Mat> &linear_memories, const Template &templ,
+                                cv::Mat &dst, cv::Size size, int T, cv::Point center) {
         CV_Assert(templ.features.size() < 8192);
 
         int W = size.width / T;
-        dst = Mat::zeros(16, 16, CV_16U);
+        dst = cv::Mat::zeros(16, 16, CV_16U);
 
         int offset_x = (center.x / T - 8) * T;
         int offset_y = (center.y / T - 8) * T;
@@ -845,8 +845,8 @@ namespace line2Dup {
         }
     }
 
-    static void similarity_64(const std::vector<Mat> &linear_memories, const Template &templ,
-                              Mat &dst, Size size, int T) {
+    static void similarity_64(const std::vector<cv::Mat> &linear_memories, const Template &templ,
+                              cv::Mat &dst, cv::Size size, int T) {
         // 63 features or less is a special case because the max similarity per-feature is 4.
         // 255/4 = 63, so up to that many we can add up similarities in 8 bits without worrying
         // about overflow. Therefore here we use _mm_add_epi8 as the workhorse, whereas a more
@@ -874,7 +874,7 @@ namespace line2Dup {
 
         /// @todo In old code, dst is buffer of size m_U. Could make it something like
         /// (span_x)x(span_y) instead?
-        dst = Mat::zeros(H, W, CV_8U);
+        dst = cv::Mat::zeros(H, W, CV_8U);
         uchar *dst_ptr = dst.ptr<uchar>();
 
         // Compute the similarity measure for this template by accumulating the contribution of
@@ -905,15 +905,15 @@ namespace line2Dup {
         }
     }
 
-    static void similarityLocal_64(const std::vector<Mat> &linear_memories, const Template &templ,
-                                   Mat &dst, Size size, int T, Point center) {
+    static void similarityLocal_64(const std::vector<cv::Mat> &linear_memories, const Template &templ,
+                                   cv::Mat &dst, cv::Size size, int T, cv::Point center) {
         // Similar to whole-image similarity() above. This version takes a position 'center'
         // and computes the energy in the 16x16 patch centered on it.
         CV_Assert(templ.features.size() < 64);
 
         // Compute the similarity map in a 16x16 patch around center
         int W = size.width / T;
-        dst = Mat::zeros(16, 16, CV_8U);
+        dst = cv::Mat::zeros(16, 16, CV_8U);
 
         // Offset each feature point by the requested center. Further adjust to (-8,-8) from the
         // center to get the top-left corner of the 16x16 patch.
@@ -972,31 +972,31 @@ namespace line2Dup {
 \****************************************************************************************/
 
     Detector::Detector() {
-        this->modality = makePtr<ColorGradient>();
+        this->modality = cv::makePtr<ColorGradient>();
         pyramid_levels = 2;
         T_at_level.push_back(4);
         T_at_level.push_back(8);
     }
 
     Detector::Detector(std::vector<int> T) {
-        this->modality = makePtr<ColorGradient>();
+        this->modality = cv::makePtr<ColorGradient>();
         pyramid_levels = T.size();
         T_at_level = T;
     }
 
     Detector::Detector(int num_features, std::vector<int> T, float weak_thresh, float strong_threash) {
-        this->modality = makePtr<ColorGradient>(weak_thresh, num_features, strong_threash);
+        this->modality = cv::makePtr<ColorGradient>(weak_thresh, num_features, strong_threash);
         pyramid_levels = T.size();
         T_at_level = T;
     }
 
-    std::vector<Match> Detector::match(Mat source, float threshold,
-                                       const std::vector<std::string> &class_ids, const Mat mask) const {
+    std::vector<Match> Detector::match(cv::Mat source, float threshold,
+                                       const std::vector<std::string> &class_ids, const cv::Mat mask) const {
         Timer timer;
         std::vector<Match> matches;
 
         // Initialize each ColorGradient with our sources
-        std::vector<Ptr<ColorGradientPyramid>> quantizers;
+        std::vector<cv::Ptr<ColorGradientPyramid>> quantizers;
         CV_Assert(mask.empty() || mask.size() == source.size());
         quantizers.push_back(modality->process(source, mask));
 
@@ -1005,7 +1005,7 @@ namespace line2Dup {
                                        std::vector<LinearMemories>(1, LinearMemories(8)));
 
         // For each pyramid level, precompute linear memories for each ColorGradient
-        std::vector<Size> sizes;
+        std::vector<cv::Size> sizes;
         for (int l = 0; l < pyramid_levels; ++l) {
             int T = T_at_level[l];
             std::vector<LinearMemories> &lm_level = lm_pyramid[l];
@@ -1015,8 +1015,8 @@ namespace line2Dup {
                     quantizers[i]->pyrDown();
             }
 
-            Mat quantized, spread_quantized;
-            std::vector<Mat> response_maps;
+            cv::Mat quantized, spread_quantized;
+            std::vector<cv::Mat> response_maps;
             for (int i = 0; i < (int) quantizers.size(); ++i) {
                 quantizers[i]->quantize(quantized);
                 spread(quantized, spread_quantized, T);
@@ -1066,7 +1066,7 @@ namespace line2Dup {
     };
 
     void Detector::matchClass(const LinearMemoryPyramid &lm_pyramid,
-                              const std::vector<Size> &sizes,
+                              const std::vector<cv::Size> &sizes,
                               float threshold, std::vector<Match> &matches,
                               const std::string &class_id,
                               const std::vector<TemplatePyramid> &template_pyramids) const {
@@ -1083,7 +1083,7 @@ namespace line2Dup {
             std::vector<Match> candidates;
             {
                 // Compute similarity maps for each ColorGradient at lowest pyramid level
-                Mat similarities;
+                cv::Mat similarities;
                 int lowest_start = static_cast<int>(tp.size() - 1);
                 int lowest_T = T_at_level.back();
                 int num_features = 0;
@@ -1098,7 +1098,7 @@ namespace line2Dup {
                     } else if (templ.features.size() < 8192) {
                         similarity(lowest_lm[0], templ, similarities, sizes.back(), lowest_T);
                     } else {
-                        CV_Error(Error::StsBadArg, "feature size too large");
+                        CV_Error(cv::Error::StsBadArg, "feature size too large");
                     }
                 }
 
@@ -1125,13 +1125,13 @@ namespace line2Dup {
                 const std::vector<LinearMemories> &lms = lm_pyramid[l];
                 int T = T_at_level[l];
                 int start = static_cast<int>(l);
-                Size size = sizes[l];
+                cv::Size size = sizes[l];
                 int border = 8 * T;
                 int offset = T / 2 + (T % 2 - 1);
                 int max_x = size.width - tp[start].width - border;
                 int max_y = size.height - tp[start].height - border;
 
-                Mat similarities2;
+                cv::Mat similarities2;
                 for (int m = 0; m < (int) candidates.size(); ++m) {
                     Match &match2 = candidates[m];
                     int x = match2.x * 2 + 1; /// @todo Support other pyramid distance
@@ -1153,12 +1153,12 @@ namespace line2Dup {
                         numFeatures += static_cast<int>(templ.features.size());
 
                         if (templ.features.size() < 64) {
-                            similarityLocal_64(lms[0], templ, similarities2, size, T, Point(x, y));
+                            similarityLocal_64(lms[0], templ, similarities2, size, T, cv::Point(x, y));
                             similarities2.convertTo(similarities2, CV_16U);
                         } else if (templ.features.size() < 8192) {
-                            similarityLocal(lms[0], templ, similarities2, size, T, Point(x, y));
+                            similarityLocal(lms[0], templ, similarities2, size, T, cv::Point(x, y));
                         } else {
-                            CV_Error(Error::StsBadArg, "feature size too large");
+                            CV_Error(cv::Error::StsBadArg, "feature size too large");
                         }
                     }
 
@@ -1194,8 +1194,8 @@ namespace line2Dup {
         }
     }
 
-    int Detector::addTemplate(const Mat source, const std::string &class_id,
-                              const Mat &object_mask, int num_features) {
+    int Detector::addTemplate(const cv::Mat source, const std::string &class_id,
+                              const cv::Mat &object_mask, int num_features) {
         std::vector<TemplatePyramid> &template_pyramids = class_templates[class_id];
         int template_id = static_cast<int>(template_pyramids.size());
 
@@ -1204,7 +1204,7 @@ namespace line2Dup {
 
         {
             // Extract a template at each pyramid level
-            Ptr<ColorGradientPyramid> qp = modality->process(source, object_mask);
+            cv::Ptr<ColorGradientPyramid> qp = modality->process(source, object_mask);
 
             if (num_features > 0)
                 qp->num_features = num_features;
@@ -1254,10 +1254,10 @@ namespace line2Dup {
             if (l > 0) center /= 2;
 
             for (auto &f: to_rotate_tp[l].features) {
-                Point2f p;
+                cv::Point2f p;
                 p.x = f.x + to_rotate_tp[l].tl_x;
                 p.y = f.y + to_rotate_tp[l].tl_y;
-                Point2f p_rot = rotatePoint(p, center, -theta / 180 * CV_PI);
+                cv::Point2f p_rot = rotatePoint(p, center, -theta / 180 * CV_PI);
 
                 Feature f_new;
                 f_new.x = int(p_rot.x + 0.5f);
@@ -1314,26 +1314,26 @@ namespace line2Dup {
         return ids;
     }
 
-    void Detector::read(const FileNode &fn) {
+    void Detector::read(const cv::FileNode &fn) {
         class_templates.clear();
         pyramid_levels = fn["pyramid_levels"];
         fn["T"] >> T_at_level;
 
-        modality = makePtr<ColorGradient>();
+        modality = cv::makePtr<ColorGradient>();
     }
 
-    void Detector::write(FileStorage &fs) const {
+    void Detector::write(cv::FileStorage &fs) const {
         fs << "pyramid_levels" << pyramid_levels;
         fs << "T" << T_at_level;
 
         modality->write(fs);
     }
 
-    std::string Detector::readClass(const FileNode &fn, const std::string &class_id_override) {
+    std::string Detector::readClass(const cv::FileNode &fn, const std::string &class_id_override) {
         // Detector should not already have this class
-        String class_id;
+        cv::String class_id;
         if (class_id_override.empty()) {
-            String class_id_tmp = fn["class_id"];
+            cv::String class_id_tmp = fn["class_id"];
 //            cout<<"class_id_tmp  "<<endl;
 //            cout<<class_id_tmp<<endl;
 //            CV_Assert(class_templates.find(class_id_tmp) == class_templates.end());
@@ -1346,16 +1346,16 @@ namespace line2Dup {
         std::vector<TemplatePyramid> &tps = v.second;
         int expected_id = 0;
 
-        FileNode tps_fn = fn["template_pyramids"];
+        cv::FileNode tps_fn = fn["template_pyramids"];
         tps.resize(tps_fn.size());
-        FileNodeIterator tps_it = tps_fn.begin(), tps_it_end = tps_fn.end();
+        cv::FileNodeIterator tps_it = tps_fn.begin(), tps_it_end = tps_fn.end();
         for (; tps_it != tps_it_end; ++tps_it, ++expected_id) {
             int template_id = (*tps_it)["template_id"];
             CV_Assert(template_id == expected_id);
-            FileNode templates_fn = (*tps_it)["templates"];
+            cv::FileNode templates_fn = (*tps_it)["templates"];
             tps[template_id].resize(templates_fn.size());
 
-            FileNodeIterator templ_it = templates_fn.begin(), templ_it_end = templates_fn.end();
+            cv::FileNodeIterator templ_it = templates_fn.begin(), templ_it_end = templates_fn.end();
             int idx = 0;
             for (; templ_it != templ_it_end; ++templ_it) {
                 tps[template_id][idx++].read(*templ_it);
@@ -1366,7 +1366,7 @@ namespace line2Dup {
         return class_id;
     }
 
-    void Detector::writeClass(const std::string &class_id, FileStorage &fs) const {
+    void Detector::writeClass(const std::string &class_id, cv::FileStorage &fs) const {
         TemplatesMap::const_iterator it = class_templates.find(class_id);
         CV_Assert(it != class_templates.end());
         const std::vector<TemplatePyramid> &tps = it->second;
@@ -1395,9 +1395,9 @@ namespace line2Dup {
     void Detector::readClasses(const std::vector<std::string> &class_ids,
                                const std::string &format) {
         for (size_t i = 0; i < class_ids.size(); ++i) {
-            const String &class_id = class_ids[i];
-            String filename = cv::format(format.c_str(), class_id.c_str());
-            FileStorage fs(filename, FileStorage::READ);
+            const cv::String &class_id = class_ids[i];
+            cv::String filename = cv::format(format.c_str(), class_id.c_str());
+            cv::FileStorage fs(filename, cv::FileStorage::READ);
             readClass(fs.root());
         }
     }
@@ -1405,9 +1405,9 @@ namespace line2Dup {
     void Detector::writeClasses(const std::string &format) const {
         TemplatesMap::const_iterator it = class_templates.begin(), it_end = class_templates.end();
         for (; it != it_end; ++it) {
-            const String &class_id = it->first;
-            String filename = cv::format(format.c_str(), class_id.c_str());
-            FileStorage fs(filename, FileStorage::WRITE);
+            const cv::String &class_id = it->first;
+            cv::String filename = cv::format(format.c_str(), class_id.c_str());
+            cv::FileStorage fs(filename, cv::FileStorage::WRITE);
             writeClass(class_id, fs);
         }
     }

@@ -11,7 +11,7 @@
 #include <opencv2/opencv.hpp>
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 class newImageWidget : QGraphicsView {
 public:
@@ -20,7 +20,7 @@ public:
 
     ~newImageWidget() override;
 
-    void showImageFromMat(Mat &mat);
+    void showImageFromMat(cv::Mat &mat);
 
 private:
     QGraphicsView *instance{nullptr};

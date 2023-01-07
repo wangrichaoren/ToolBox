@@ -56,7 +56,7 @@ calib::calib(QWidget *parent) :
         fs << "CalibrationDate" << asctime(localtime(&rawtime));
         fs.release();
 
-        showMessageBox(this,"相机标定完成!");
+        showMessageBox(this, "相机标定完成!");
 
         // 清空进度条
         value = 0;
@@ -111,7 +111,7 @@ calib::calib(QWidget *parent) :
             // 初始化点，cv::Point3f(j, i, 0) 保存的是 x,y,z 坐标。
             for (int i{0}; i < col; i++) {
                 for (int j{0}; j < row; j++) {
-                    objp.push_back(cv::Point3f(j * dis, i * dis, 0));
+                    objp.push_back(cv::Point3f(j * dis * 0.01, i * dis * 0.01, 0));
                 }
             }
 

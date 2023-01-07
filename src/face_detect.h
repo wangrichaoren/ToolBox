@@ -35,7 +35,7 @@ public:
 
 
 private:
-    inline void showImage(Mat &frame);
+    inline void showImage(cv::Mat &frame);
     Ui::face_detect *ui;
     bool is_open_cam;
     bool is_open_det;

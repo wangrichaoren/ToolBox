@@ -24,6 +24,8 @@ public:
 
     void clickCalibBtn();
 
+    void clickPCLBtn();
+
     ~admin_system() override;
 
 private:

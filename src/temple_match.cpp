@@ -90,7 +90,7 @@ namespace cv_dnn {
 // copied from opencv 3.4, not exist in 3.0
     template<typename _Tp>
     static inline
-    double jaccardDistance__(const Rect_<_Tp> &a, const Rect_<_Tp> &b) {
+    double jaccardDistance__(const cv::Rect_<_Tp> &a, const cv::Rect_<_Tp> &b) {
         _Tp Aa = a.area();
         _Tp Ab = b.area();
 
@@ -109,7 +109,7 @@ namespace cv_dnn {
         return 1.f - static_cast<float>(jaccardDistance__(a, b));
     }
 
-    void NMSBoxes(const std::vector<Rect> &bboxes, const std::vector<float> &scores,
+    void NMSBoxes(const std::vector<cv::Rect> &bboxes, const std::vector<float> &scores,
                   const float score_threshold, const float nms_threshold,
                   std::vector<int> &indices, const float eta = 1, const int top_k = 0) {
         NMSFast_(bboxes, scores, score_threshold, nms_threshold, eta, top_k, indices, rectOverlap);
@@ -181,7 +181,7 @@ void temple_match::clickTrainBtn() {
         showMessageBox(this, "请先进行标注,再执行训练!\n提示:双击鼠标左键,可打开框选工具!");
         return;
     }
-    Mat c_mat = m_Image->getRoiRectToMat();
+    cv::Mat c_mat = m_Image->getRoiRectToMat();
 //    imwrite("./debug.png", c_mat);
     if (c_mat.empty()) {
         imwrite("./什么玩意(c_mat.empty).png", c_mat);
@@ -203,7 +203,7 @@ void temple_match::clickTrainBtn() {
     line2Dup::Detector detector(feature_num, depth_range, weak, strong);
 
     assert(!c_mat.empty() && "check your img path");
-    Mat mask = Mat(c_mat.size(), CV_8UC1, {255});
+    cv::Mat mask = cv::Mat(c_mat.size(), CV_8UC1, {255});
 
     shape_based_matching::shapeInfo_producer shapes(c_mat, mask);
     shapes.angle_range = rotation_range;
@@ -217,7 +217,7 @@ void temple_match::clickTrainBtn() {
     std::vector<shape_based_matching::shapeInfo_producer::Info> infos_have_templ;
     string class_id = "test";
     int templ_id = 0;
-    Mat to_show;
+    cv::Mat to_show;
     for (auto &info: shapes.infos) {
         to_show = shapes.src_of(info);
 
@@ -312,7 +312,7 @@ void temple_match::clickDetBtn() {
 //    int stride = 8;
     int n = c_mat.rows / stride;
     int m = c_mat.cols / stride;
-    Rect roi(0, 0, stride * m, stride * n);
+    cv::Rect roi(0, 0, stride * m, stride * n);
 
     c_mat = c_mat(roi).clone();
 
@@ -325,11 +325,11 @@ void temple_match::clickDetBtn() {
 //    if (top5 > matches.size()) top5 = matches.size();
     if (top5 > matches.size()) top5 = matches.size();
 
-    vector<Rect> boxes;
+    vector<cv::Rect> boxes;
     vector<float> scores;
     vector<int> idxs;
     for (auto match: matches) {
-        Rect box;
+        cv::Rect box;
         box.x = match.x;
         box.y = match.y;
 
@@ -375,7 +375,7 @@ void temple_match::clickDetBtn() {
                     to_string(int(round(match.similarity))) + "-" +
                     to_string(int(round(infos[match.template_id].angle))) + "-" +
                     to_string(int(round(infos[match.template_id].scale))),
-                    Point(match.x + r - 30, match.y - 3), FONT_HERSHEY_PLAIN, 2, Color);
+                    cv::Point(match.x + r - 30, match.y - 3), cv::FONT_HERSHEY_PLAIN, 2, Color);
 //        cv::rectangle(c_mat, {match.x, match.y}, {x, y}, randColor, 2);
 
         std::cout << "\nmatch.template_id: " << match.template_id << std::endl;

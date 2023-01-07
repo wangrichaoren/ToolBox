@@ -141,8 +141,15 @@
            <height>80</height>
           </size>
          </property>
+         <property name="font">
+          <font>
+           <pointsize>15</pointsize>
+           <weight>75</weight>
+           <bold>true</bold>
+          </font>
+         </property>
          <property name="text">
-          <string>未开发</string>
+          <string>PCL</string>
          </property>
         </widget>
        </item>

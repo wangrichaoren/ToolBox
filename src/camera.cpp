@@ -19,7 +19,7 @@ void camera::closeCam() {
     }
 }
 
-Mat camera::getFrame() {
+cv::Mat camera::getFrame() {
     lock1.unlock();
     lock2.lock();
     return frame;
@@ -27,7 +27,7 @@ Mat camera::getFrame() {
 
 
 bool camera::openCam(int idx) {
-    capture = VideoCapture(idx);
+    capture = cv::VideoCapture(idx);
     if (capture.isOpened()) {
         is_open = true;
         return true;

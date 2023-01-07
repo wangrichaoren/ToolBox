@@ -35,6 +35,11 @@ find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
+# vtk
+set(VTK_DIR "/usr/local/lib/cmake/vtk-8.2")
+find_package(VTK REQUIRED)
+include(${VTK_USE_FILE})
+
 # 导入astra相机驱动
 find_package(Astra REQUIRED)
 # ------导入pcl------
@@ -66,18 +71,19 @@ link_directories(${PROJECT_SOURCE_DIR}/3rdParty/lib)
 # include MIPP headers
 include_directories(${INCLUDE_DIRECTORIES} "3rdParty/include/MIPP/")
 
-set(SOURCE src/main_window.cpp src/main_window.h src/main_window.ui src/encoder.cpp src/encoder.h src/encoder.ui src/utils.h src/utils.cpp src/DES.h src/DES.cpp src/myencoder.cpp src/myencoder.h src/admin_system.cpp src/admin_system.h src/admin_system.ui src/temple_match.cpp src/temple_match.h src/temple_match.ui src/imagewidget.cpp src/imagewidget.h src/face_detect.cpp src/face_detect.h src/face_detect.ui src/newImageWidget.cpp src/newImageWidget.h src/camera.cpp src/camera.h src/ArcFace.cpp src/ArcFace.h src/AstraCamera.hpp src/calib.cpp src/calib.h src/calib.ui)
+set(SOURCE src/main_window.cpp src/main_window.h src/main_window.ui src/encoder.cpp src/encoder.h src/encoder.ui src/utils.h src/utils.cpp src/DES.h src/DES.cpp src/myencoder.cpp src/myencoder.h src/admin_system.cpp src/admin_system.h src/admin_system.ui src/temple_match.cpp src/temple_match.h src/temple_match.ui src/imagewidget.cpp src/imagewidget.h src/face_detect.cpp src/face_detect.h src/face_detect.ui src/newImageWidget.cpp src/newImageWidget.h src/camera.cpp src/camera.h src/ArcFace.cpp src/ArcFace.h src/AstraCamera.hpp src/calib.cpp src/calib.h src/calib.ui src/pcl_visual.cpp src/pcl_visual.h src/pcl_visual.ui)
 set(RESOURCES resources.qrc)
 set(LIND2DUP src/line2Dup.cpp src/face_detect.cpp src/face_detect.h src/face_detect.ui)
 set(YAMLCPP ${PROJECT_SOURCE_DIR}/3rdParty/lib/yaml-cpp/libyaml-cpp.a)
 set(ARCSOFT_FACE "${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face.so" "${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face_engine.so")
 
 add_executable(ToolBox main.cpp ${SOURCE} ${RESOURCES} ${LIND2DUP})
-#add_executable(test_pcl test/test_pcl.cpp)
+add_executable(test_pcl test/test_pcl.cpp)
 add_executable(testAstraCam test/testAstraCam.cpp)
 
-target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${PCL_LIBRARIES})
-#target_link_libraries(test_pcl  ${PCL_LIBRARIES})
+#message("vtk lib: " ${VTK_LIBRARIES})
+target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${PCL_LIBRARIES}  ${VTK_LIBRARIES})
+target_link_libraries(test_pcl  ${PCL_LIBRARIES} ${OpenCV_LIBS})
 target_link_libraries(testAstraCam  ${ASTRA_LIBRARIES} ${OpenCV_LIBS})
 
 install(TARGETS ToolBox RUNTIME DESTINATION bin)

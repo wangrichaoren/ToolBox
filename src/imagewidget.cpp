@@ -223,7 +223,7 @@ void ImageWidget::graphics(QImage &image, string path) {
     instance->setFocus();//将界面的焦点设置到当前Graphics View控件
 }
 
-void ImageWidget::graphicsImageFromMat(Mat &mat) {
+void ImageWidget::graphicsImageFromMat(cv::Mat &mat) {
     // image也是filenane啊...
 //    roirect = QRectF(0, 0, 0, 0);
 //    Mat mat;
@@ -322,7 +322,7 @@ void ImageWidget::scaleRect(QGraphicsSceneMouseEvent *event, EnumDirection dir) 
     }
 }
 
-Mat ImageWidget::getRoiRectToMat() {
+cv::Mat ImageWidget::getRoiRectToMat() {
     if (!hasRoiRect()) {
         throw runtime_error("请先框选roi，再执行训练!");
     }
@@ -337,8 +337,8 @@ Mat ImageWidget::getRoiRectToMat() {
 //    auto botright = QPointF(diffx + roirect.width() / 2, diffy + roirect.height() / 2);
     // 直接从原图获取
     auto mat = cv::imread(img_path);
-    auto cvimg = mat(Range(topleft.y(), topleft.y() + roirect.height()),
-                     Range(topleft.x(), topleft.x() + roirect.width()));
+    auto cvimg = mat(cv::Range(topleft.y(), topleft.y() + roirect.height()),
+                     cv::Range(topleft.x(), topleft.x() + roirect.width()));
 
     // bug 从Qimgae转换成Mat的时候产生的图片有条纹...直接截取原图
 //    QRectF tmprect = QRectF(topleft, botright);
@@ -356,20 +356,20 @@ bool ImageWidget::hasRoiRect() {
     return true;
 }
 
-Mat ImageWidget::QImage2Mat(const QImage &src) {
-    Mat mat;
+cv::Mat ImageWidget::QImage2Mat(const QImage &src) {
+    cv::Mat mat;
 //    cout<<src.format()<<endl;
     switch (src.format()) {
         case QImage::Format_RGB888:
-            mat = Mat(src.height(), src.width(),
+            mat = cv::Mat(src.height(), src.width(),
                       CV_8UC3, (void *) src.constBits(), src.bytesPerLine());
             break;
         case QImage::Format_ARGB32_Premultiplied:
-            mat = Mat(src.height(), src.width(),
+            mat = cv::Mat(src.height(), src.width(),
                       CV_8UC4, (void *) src.constBits(), src.bytesPerLine());
             break;
         case QImage::Format_RGB32:
-            mat = Mat(src.height(), src.width(),
+            mat = cv::Mat(src.height(), src.width(),
                       CV_8UC4, (void *) src.constBits(), src.bytesPerLine());
             break;
         case QImage::Format_Invalid:
@@ -422,6 +422,6 @@ Mat ImageWidget::QImage2Mat(const QImage &src) {
     return mat;
 }
 
-Mat ImageWidget::getScenceToMat() {
-    return imread(img_path);
+cv::Mat ImageWidget::getScenceToMat() {
+    return cv::imread(img_path);
 }

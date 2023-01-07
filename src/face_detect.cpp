@@ -79,7 +79,7 @@ face_detect::face_detect(QWidget *parent) :
                 continue;
             }
 
-            cvtColor(frame, frame, COLOR_BGR2RGB);
+            cvtColor(frame, frame, cv::COLOR_BGR2RGB);
 
             flip(frame, frame, 1);
 
@@ -141,7 +141,7 @@ void face_detect::closeEvent(QCloseEvent *e) {
     scene->clear();
 }
 
-inline void face_detect::showImage(Mat &frame) {
+inline void face_detect::showImage(cv::Mat &frame) {
 //    cout << frame.rows << endl;
 //    cout << frame.cols << endl;
 

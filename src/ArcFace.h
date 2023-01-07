@@ -18,7 +18,7 @@
 #include <opencv2/opencv.hpp>
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 #define APPID "AKgVRqi8NpqviMFYs1cVU4HwCxXx7sU8H7nxnuUJuE8Y"
 #define SDKKEY "HHXoXkW51gMV7bawRvitxg1akqo5EXXn7T9HZSpM5dHG"
@@ -36,7 +36,7 @@ public:
 
     ~ArcFace();
 
-    Mat detect(Mat &frame);
+    cv::Mat detect(cv::Mat &frame);
 
 private:
     void timestampToTime(char *timeStamp, char *dateTime, int dateTimeSize);

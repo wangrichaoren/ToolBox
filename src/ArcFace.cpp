@@ -99,7 +99,7 @@ ArcFace::~ArcFace() {
 
 }
 
-Mat ArcFace::detect(Mat &frame) {
+cv::Mat ArcFace::detect(cv::Mat &frame) {
     auto originalImg = cvIplImage(frame);
     IplImage *img = cvCreateImage(cvSize(originalImg.width - originalImg.width %
                                                              4, originalImg.height), IPL_DEPTH_8U,
@@ -159,19 +159,19 @@ Mat ArcFace::detect(Mat &frame) {
                 printf("Face Orient: %d\n", detectedFaces.faceOrient[i]);
 
                 // 绘制到frame:Mat上
-                rectangle(frame, Point(detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top),
-                          Point(detectedFaces.faceRect[i].right, detectedFaces.faceRect[i].bottom),
-                          Scalar(255, 0, 0), 1, LINE_4);
+                rectangle(frame, cv::Point(detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top),
+                          cv::Point(detectedFaces.faceRect[i].right, detectedFaces.faceRect[i].bottom),
+                          cv::Scalar(255, 0, 0), 1, cv::LINE_4);
 
                 cv::circle(frame,
-                           Point(detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top),
+                           cv::Point(detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top),
                            3,
-                           Scalar(0, 255, 0), -1, LINE_4);
+                           cv::Scalar(0, 255, 0), -1, cv::LINE_4);
 
                 cv::circle(frame,
-                           Point(detectedFaces.faceRect[i].right, detectedFaces.faceRect[i].bottom),
+                           cv::Point(detectedFaces.faceRect[i].right, detectedFaces.faceRect[i].bottom),
                            3,
-                           Scalar(0, 0, 255), -1, LINE_4);
+                           cv::Scalar(0, 0, 255), -1, cv::LINE_4);
 
 
             }

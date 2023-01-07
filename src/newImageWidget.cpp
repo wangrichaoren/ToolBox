@@ -17,8 +17,8 @@ newImageWidget::~newImageWidget() {
     delete mScene;
 }
 
-void newImageWidget::showImageFromMat(Mat &mat) {
-    cvtColor(mat, mat, COLOR_BGR2RGB);
+void newImageWidget::showImageFromMat(cv::Mat &mat) {
+    cvtColor(mat, mat, cv::COLOR_BGR2RGB);
     flip(mat, mat, 1);
     QImage q_img((const unsigned char *) mat.data, mat.cols, mat.rows, mat.step,
                  QImage::Format_RGB888);

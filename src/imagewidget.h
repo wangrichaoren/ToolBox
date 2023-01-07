@@ -24,7 +24,7 @@
 #include "utils.h"
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 #define EDGE_WIDTH  2 //边框宽度
 #define EDGPADDING  5
@@ -53,9 +53,9 @@ public:
 
     bool hasRoiRect();
 
-    Mat getRoiRectToMat();
+    cv::Mat getRoiRectToMat();
 
-    Mat getScenceToMat();
+    cv::Mat getScenceToMat();
 
     void setImage(QPixmap *pixmap);
 
@@ -63,7 +63,7 @@ public:
 
     void graphics(QImage &image, string path);
 
-    void graphicsImageFromMat(Mat &mat);
+    void graphicsImageFromMat(cv::Mat &mat);
 
     QRectF boundingRect() const;
 
@@ -95,7 +95,7 @@ public:
 
     void setQGraphicsViewWH(int nwidth, int nheight);
 
-    Mat QImage2Mat(QImage const &src);
+    cv::Mat QImage2Mat(QImage const &src);
 
 private:
     QGraphicsView *instance;

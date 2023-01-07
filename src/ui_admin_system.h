@@ -1,7 +1,7 @@
 /********************************************************************************
 ** Form generated from reading UI file 'admin_system.ui'
 **
-** Created by: Qt User Interface Compiler version 5.9.5
+** Created by: Qt User Interface Compiler version 5.14.2
 **
 ** WARNING! All changes made in this file will be lost when recompiling UI file!
 ********************************************************************************/
@@ -10,12 +10,9 @@
 #define UI_ADMIN_SYSTEM_H
 
 #include <QtCore/QVariant>
-#include <QtWidgets/QAction>
 #include <QtWidgets/QApplication>
-#include <QtWidgets/QButtonGroup>
 #include <QtWidgets/QDialog>
 #include <QtWidgets/QGridLayout>
-#include <QtWidgets/QHeaderView>
 #include <QtWidgets/QLabel>
 #include <QtWidgets/QPushButton>
 #include <QtWidgets/QScrollArea>
@@ -61,10 +58,10 @@ public:
     void setupUi(QDialog *admin_system)
     {
         if (admin_system->objectName().isEmpty())
-            admin_system->setObjectName(QStringLiteral("admin_system"));
+            admin_system->setObjectName(QString::fromUtf8("admin_system"));
         admin_system->resize(597, 801);
         gridLayout = new QGridLayout(admin_system);
-        gridLayout->setObjectName(QStringLiteral("gridLayout"));
+        gridLayout->setObjectName(QString::fromUtf8("gridLayout"));
         horizontalSpacer_3 = new QSpacerItem(40, 20, QSizePolicy::Expanding, QSizePolicy::Minimum);
 
         gridLayout->addItem(horizontalSpacer_3, 1, 1, 1, 1);
@@ -90,51 +87,56 @@ public:
         gridLayout->addItem(verticalSpacer_2, 1, 0, 3, 1);
 
         scrollArea = new QScrollArea(admin_system);
-        scrollArea->setObjectName(QStringLiteral("scrollArea"));
+        scrollArea->setObjectName(QString::fromUtf8("scrollArea"));
         scrollArea->setWidgetResizable(true);
         scrollAreaWidgetContents = new QWidget();
-        scrollAreaWidgetContents->setObjectName(QStringLiteral("scrollAreaWidgetContents"));
+        scrollAreaWidgetContents->setObjectName(QString::fromUtf8("scrollAreaWidgetContents"));
         scrollAreaWidgetContents->setGeometry(QRect(0, 0, 525, 679));
         gridLayout_2 = new QGridLayout(scrollAreaWidgetContents);
-        gridLayout_2->setObjectName(QStringLiteral("gridLayout_2"));
+        gridLayout_2->setObjectName(QString::fromUtf8("gridLayout_2"));
         label_2 = new QLabel(scrollAreaWidgetContents);
-        label_2->setObjectName(QStringLiteral("label_2"));
+        label_2->setObjectName(QString::fromUtf8("label_2"));
         label_2->setMaximumSize(QSize(80, 80));
 
         gridLayout_2->addWidget(label_2, 3, 1, 1, 1);
 
         label_4 = new QLabel(scrollAreaWidgetContents);
-        label_4->setObjectName(QStringLiteral("label_4"));
+        label_4->setObjectName(QString::fromUtf8("label_4"));
         label_4->setMaximumSize(QSize(80, 80));
 
         gridLayout_2->addWidget(label_4, 7, 1, 1, 1);
 
         pushButton_4 = new QPushButton(scrollAreaWidgetContents);
-        pushButton_4->setObjectName(QStringLiteral("pushButton_4"));
+        pushButton_4->setObjectName(QString::fromUtf8("pushButton_4"));
         pushButton_4->setMinimumSize(QSize(0, 80));
+        QFont font;
+        font.setPointSize(15);
+        font.setBold(true);
+        font.setWeight(75);
+        pushButton_4->setFont(font);
 
         gridLayout_2->addWidget(pushButton_4, 7, 2, 1, 1);
 
         pushButton_2 = new QPushButton(scrollAreaWidgetContents);
-        pushButton_2->setObjectName(QStringLiteral("pushButton_2"));
+        pushButton_2->setObjectName(QString::fromUtf8("pushButton_2"));
         pushButton_2->setMinimumSize(QSize(200, 80));
-        QFont font;
-        font.setFamily(QStringLiteral("Ani"));
-        font.setPointSize(16);
-        font.setBold(true);
-        font.setWeight(75);
-        pushButton_2->setFont(font);
+        QFont font1;
+        font1.setFamily(QString::fromUtf8("Ani"));
+        font1.setPointSize(16);
+        font1.setBold(true);
+        font1.setWeight(75);
+        pushButton_2->setFont(font1);
 
         gridLayout_2->addWidget(pushButton_2, 3, 2, 1, 1);
 
         pushButton_3 = new QPushButton(scrollAreaWidgetContents);
-        pushButton_3->setObjectName(QStringLiteral("pushButton_3"));
+        pushButton_3->setObjectName(QString::fromUtf8("pushButton_3"));
         pushButton_3->setMinimumSize(QSize(0, 80));
-        QFont font1;
-        font1.setPointSize(16);
-        font1.setBold(true);
-        font1.setWeight(75);
-        pushButton_3->setFont(font1);
+        QFont font2;
+        font2.setPointSize(16);
+        font2.setBold(true);
+        font2.setWeight(75);
+        pushButton_3->setFont(font2);
 
         gridLayout_2->addWidget(pushButton_3, 5, 2, 1, 1);
 
@@ -155,14 +157,14 @@ public:
         gridLayout_2->addItem(verticalSpacer_5, 4, 2, 1, 1);
 
         pushButton_1 = new QPushButton(scrollAreaWidgetContents);
-        pushButton_1->setObjectName(QStringLiteral("pushButton_1"));
+        pushButton_1->setObjectName(QString::fromUtf8("pushButton_1"));
         QSizePolicy sizePolicy(QSizePolicy::Fixed, QSizePolicy::Fixed);
         sizePolicy.setHorizontalStretch(0);
         sizePolicy.setVerticalStretch(0);
         sizePolicy.setHeightForWidth(pushButton_1->sizePolicy().hasHeightForWidth());
         pushButton_1->setSizePolicy(sizePolicy);
         pushButton_1->setMinimumSize(QSize(200, 80));
-        pushButton_1->setFont(font);
+        pushButton_1->setFont(font1);
         pushButton_1->setAutoRepeat(false);
 
         gridLayout_2->addWidget(pushButton_1, 1, 2, 1, 1);
@@ -176,7 +178,7 @@ public:
         gridLayout_2->addItem(verticalSpacer_7, 8, 2, 1, 1);
 
         label_1 = new QLabel(scrollAreaWidgetContents);
-        label_1->setObjectName(QStringLiteral("label_1"));
+        label_1->setObjectName(QString::fromUtf8("label_1"));
         label_1->setMaximumSize(QSize(80, 80));
 
         gridLayout_2->addWidget(label_1, 1, 1, 1, 1);
@@ -186,7 +188,7 @@ public:
         gridLayout_2->addItem(horizontalSpacer_6, 1, 0, 1, 1);
 
         label_3 = new QLabel(scrollAreaWidgetContents);
-        label_3->setObjectName(QStringLiteral("label_3"));
+        label_3->setObjectName(QString::fromUtf8("label_3"));
         label_3->setMaximumSize(QSize(80, 80));
 
         gridLayout_2->addWidget(label_3, 5, 1, 1, 1);
@@ -223,15 +225,15 @@ public:
 
     void retranslateUi(QDialog *admin_system)
     {
-        admin_system->setWindowTitle(QApplication::translate("admin_system", "admin_system", Q_NULLPTR));
-        label_2->setText(QApplication::translate("admin_system", "TextLabel", Q_NULLPTR));
-        label_4->setText(QApplication::translate("admin_system", "TextLabel", Q_NULLPTR));
-        pushButton_4->setText(QApplication::translate("admin_system", "\346\234\252\345\274\200\345\217\221", Q_NULLPTR));
-        pushButton_2->setText(QApplication::translate("admin_system", "\344\272\272\350\204\270\350\257\206\345\210\253", Q_NULLPTR));
-        pushButton_3->setText(QApplication::translate("admin_system", "\347\233\270\346\234\272\346\240\207\345\256\232", Q_NULLPTR));
-        pushButton_1->setText(QApplication::translate("admin_system", "\346\250\241\346\235\277\345\214\271\351\205\215", Q_NULLPTR));
-        label_1->setText(QApplication::translate("admin_system", "TextLabel.....", Q_NULLPTR));
-        label_3->setText(QApplication::translate("admin_system", "TextLabel", Q_NULLPTR));
+        admin_system->setWindowTitle(QCoreApplication::translate("admin_system", "admin_system", nullptr));
+        label_2->setText(QCoreApplication::translate("admin_system", "TextLabel", nullptr));
+        label_4->setText(QCoreApplication::translate("admin_system", "TextLabel", nullptr));
+        pushButton_4->setText(QCoreApplication::translate("admin_system", "PCL", nullptr));
+        pushButton_2->setText(QCoreApplication::translate("admin_system", "\344\272\272\350\204\270\350\257\206\345\210\253", nullptr));
+        pushButton_3->setText(QCoreApplication::translate("admin_system", "\347\233\270\346\234\272\346\240\207\345\256\232", nullptr));
+        pushButton_1->setText(QCoreApplication::translate("admin_system", "\346\250\241\346\235\277\345\214\271\351\205\215", nullptr));
+        label_1->setText(QCoreApplication::translate("admin_system", "TextLabel.....", nullptr));
+        label_3->setText(QCoreApplication::translate("admin_system", "TextLabel", nullptr));
     } // retranslateUi
 
 };

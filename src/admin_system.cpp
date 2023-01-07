@@ -10,6 +10,7 @@
 #include "temple_match.h"
 #include "face_detect.h"
 #include "calib.h"
+#include "pcl_visual.h"
 
 
 admin_system::admin_system(QWidget *parent) :
@@ -23,6 +24,7 @@ admin_system::admin_system(QWidget *parent) :
     connect(ui->pushButton_1, &QPushButton::clicked, this, &admin_system::clickTempleMatchBtn);
     connect(ui->pushButton_2, &QPushButton::clicked, this, &admin_system::clickFaceDetBtn);
     connect(ui->pushButton_3, &QPushButton::clicked, this, &admin_system::clickCalibBtn);
+    connect(ui->pushButton_4, &QPushButton::clicked, this, &admin_system::clickPCLBtn);
 }
 
 admin_system::~admin_system() {
@@ -57,5 +59,15 @@ void admin_system::clickCalibBtn() {
     cb->show();
     cb->exec();
     delete cb;
+    this->setEnabled(true);
+}
+
+void admin_system::clickPCLBtn() {
+    qDebug("打开pcl相关窗口");
+    this->setEnabled(false);
+    auto pv = new pcl_visual(this);
+    pv->show();
+    pv->exec();
+    delete pv;
     this->setEnabled(true);
 }

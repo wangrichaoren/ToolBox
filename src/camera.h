@@ -7,7 +7,7 @@
 
 #include <opencv2/opencv.hpp>
 
-using namespace cv;
+//using namespace cv;
 
 #include <unistd.h>
 #include <mutex>
@@ -28,7 +28,7 @@ public:
 
     void closeCam();
 
-    Mat getFrame();
+    cv::Mat getFrame();
 
     void setCameraType(ENUM_CAM= local_cam);
 
@@ -38,9 +38,9 @@ public:
 
 private:
     bool is_open;
-    VideoCapture capture;
+    cv::VideoCapture capture;
     ENUM_CAM cam_type;
-    Mat frame;
+    cv::Mat frame;
     std::mutex lock1;
     std::mutex lock2;
 };

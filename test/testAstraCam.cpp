@@ -4,7 +4,7 @@
 
 
 using namespace std;
-using namespace cv;
+//using namespace cv;
 
 
 int main() {
@@ -16,11 +16,12 @@ int main() {
         auto d = cam.getDepthMat();
         imshow("test", i);
         imshow("test2", d);
-        int k = waitKey(30);
+        int k = cv::waitKey(30);
         if (k == 27) {
             break;
         } else if (k == 32) {
-            cam.pause();
+            imwrite("./rgb.png", i);
+            imwrite("./depth.png", d);
         }
 
     }

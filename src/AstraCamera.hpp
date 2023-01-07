@@ -151,7 +151,7 @@ public:
 
         if (!tmpMat.empty()) {
             cMat = tmpMat;
-            tmpMat.release();
+//            tmpMat.release();
         }
     };
 
@@ -172,15 +172,15 @@ public:
 
         cv::Mat tmpMat(height, width, CV_16UC1, depthData);
 
-        free(depthData);
 
         astra_frame_index_t frameIndex;
         astra_depthframe_get_frameindex(depthFrame, &frameIndex);
 
         if (!tmpMat.empty()) {
             dMat = tmpMat;
-            tmpMat.release();
+//            tmpMat.release();
         }
+        free(depthData);
     }
 
     cv::Mat getColorMat() {
