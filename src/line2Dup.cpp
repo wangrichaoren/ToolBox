@@ -745,7 +745,7 @@ namespace line2Dup {
         int wf = (templ.width - 1) / T + 1;
         int hf = (templ.height - 1) / T + 1;
 
-        // Span is the range over which we can shift the template around the input image
+        // Span is the range over which we can shift the templates around the input image
         int span_x = W - wf;
         int span_y = H - hf;
 
@@ -862,13 +862,13 @@ namespace line2Dup {
         int wf = (templ.width - 1) / T + 1;
         int hf = (templ.height - 1) / T + 1;
 
-        // Span is the range over which we can shift the template around the input image
+        // Span is the range over which we can shift the templates around the input image
         int span_x = W - wf;
         int span_y = H - hf;
 
         // Compute number of contiguous (in memory) pixels to check when sliding feature over
-        // image. This allows template to wrap around left/right border incorrectly, so any
-        // wrapped template matches must be filtered out!
+        // image. This allows templates to wrap around left/right border incorrectly, so any
+        // wrapped templates matches must be filtered out!
         int template_positions = span_y * W + span_x + 1; // why add 1?
         //int template_positions = (span_y - 1) * W + span_x; // More correct?
 
@@ -877,11 +877,11 @@ namespace line2Dup {
         dst = cv::Mat::zeros(H, W, CV_8U);
         uchar *dst_ptr = dst.ptr<uchar>();
 
-        // Compute the similarity measure for this template by accumulating the contribution of
+        // Compute the similarity measure for this templates by accumulating the contribution of
         // each feature
         for (int i = 0; i < (int) templ.features.size(); ++i) {
             // Add the linear memory at the appropriate offset computed from the location of
-            // the feature in the template
+            // the feature in the templates
             Feature f = templ.features[i];
             // Discard feature if out of bounds
             /// @todo Shouldn't actually see x or y < 0 here?
@@ -1141,7 +1141,7 @@ namespace line2Dup {
                     x = std::max(x, border);
                     y = std::max(y, border);
 
-                    // Require 8 (reduced) row/cols to the down/left, plus the template size
+                    // Require 8 (reduced) row/cols to the down/left, plus the templates size
                     x = std::min(x, max_x);
                     y = std::min(y, max_y);
 
@@ -1203,7 +1203,7 @@ namespace line2Dup {
         tp.resize(pyramid_levels);
 
         {
-            // Extract a template at each pyramid level
+            // Extract a templates at each pyramid level
             cv::Ptr<ColorGradientPyramid> qp = modality->process(source, object_mask);
 
             if (num_features > 0)
@@ -1384,7 +1384,7 @@ namespace line2Dup {
             for (size_t j = 0; j < tp.size(); ++j) {
                 fs << "{";
                 tp[j].write(fs);
-                fs << "}"; // current template
+                fs << "}"; // current templates
             }
             fs << "]"; // templates
             fs << "}"; // current pyramid

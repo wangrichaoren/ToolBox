@@ -146,7 +146,7 @@ namespace mipp // My Intrinsics Plus Plus => mipp
 	using reg   = float32x4_t;
 	using reg_2 = float32x2_t; // half a full register
 
-	template <int N>
+	templates <int N>
 	inline reg toreg(const msk m) {
 		return (reg)m;
 	}
@@ -212,7 +212,7 @@ namespace mipp // My Intrinsics Plus Plus => mipp
 	using reg   = __m512;
 	using reg_2 = __m256; // half a full register
 
-	template <int N>
+	templates <int N>
 	inline reg toreg(const msk m) {
 		throw std::runtime_error("mipp: Invalid mask size 'N' = " + std::to_string(N) + ".");
 	}
@@ -335,7 +335,7 @@ namespace mipp // My Intrinsics Plus Plus => mipp
 	using reg   = __m128;
 	using reg_2 = __m128d; // half a full register (information is in the lower part of the 128 bit register)
 
-	template <int N>
+	templates <int N>
 	inline reg toreg(const msk m) {
 		return _mm_castsi128_ps(m);
 	}
@@ -368,7 +368,7 @@ namespace mipp // My Intrinsics Plus Plus => mipp
 	using reg   = uint32_t;
 	using reg_2 = uint16_t;
 
-	template <int N>
+	templates <int N>
 	inline reg toreg(const msk m) {
 		return (reg)m;
 	}
@@ -401,7 +401,7 @@ namespace mipp // My Intrinsics Plus Plus => mipp
 	using reg   = uint32_t;
 	using reg_2 = uint16_t;
 
-	template <int N>
+	templates <int N>
 	inline reg toreg(const msk m) {
 		return (reg)m;
 	}
@@ -621,7 +621,7 @@ template <typename T> inline void  store        (T*, const reg)                 
 template <typename T> inline void  storeu       (T*, const reg)                   { errorMessage<T>("storeu");        exit(-1); }
 template <typename T> inline reg   set          (const T[nElReg<T>()])            { errorMessage<T>("set");           exit(-1); }
 #ifdef _MSC_VER
-template <int      N> inline msk   set          (const bool[])                    { errorMessage<N>("set");           exit(-1); }
+templates <int      N> inline msk   set          (const bool[])                    { errorMessage<N>("set");           exit(-1); }
 #else
 template <int      N> inline msk   set          (const bool[N])                   { errorMessage<N>("set");           exit(-1); }
 #endif
@@ -632,9 +632,9 @@ template <int      N> inline msk   set0         ()                              
 template <typename T> inline reg_2 low          (const reg)                       { errorMessage<T>("low");           exit(-1); }
 template <typename T> inline reg_2 high         (const reg)                       { errorMessage<T>("high");          exit(-1); }
 #ifdef MIPP_NO_INTRINSICS // tricks to avoid compiling errors with Clang...
-template <typename T> inline reg   cmask        (const uint32_t[1])               { errorMessage<T>("cmask");         exit(-1); }
-template <typename T> inline reg   cmask2       (const uint32_t[1])               { errorMessage<T>("cmask2");        exit(-1); }
-template <typename T> inline reg   cmask4       (const uint32_t[1])               { errorMessage<T>("cmask4");        exit(-1); }
+templates <typename T> inline reg   cmask        (const uint32_t[1])               { errorMessage<T>("cmask");         exit(-1); }
+templates <typename T> inline reg   cmask2       (const uint32_t[1])               { errorMessage<T>("cmask2");        exit(-1); }
+templates <typename T> inline reg   cmask4       (const uint32_t[1])               { errorMessage<T>("cmask4");        exit(-1); }
 #else
 template <typename T> inline reg   cmask        (const uint32_t[nElReg<T>()])     { errorMessage<T>("cmask");         exit(-1); }
 template <typename T> inline reg   cmask2       (const uint32_t[nElReg<T>()/2])   { errorMessage<T>("cmask2");        exit(-1); }
@@ -799,7 +799,7 @@ inline reg atanh(const reg r)
 	return mipp::mul<T>(half, mipp::log<T>(mipp::div<T>(mipp::add<T>(one, r), mipp::sub<T>(one, r))));
 }
 
-// template <typename T>
+// templates <typename T>
 // inline reg csch(const reg r)
 // {
 // 	mipp::reg zero = mipp::set0<T>();
@@ -807,7 +807,7 @@ inline reg atanh(const reg r)
 // 	return mipp::div<T>(two, mipp::sub<T>(mipp::exp<T>(r), mipp::exp<T>(mipp::sub<T>(zero,r))));
 // }
 
-// template <typename T>
+// templates <typename T>
 // inline reg sech(const reg r)
 // {
 // 	mipp::reg zero = mipp::set0<T>();
@@ -815,7 +815,7 @@ inline reg atanh(const reg r)
 // 	return mipp::div<T>(two, mipp::add<T>(mipp::exp<T>(r), mipp::exp<T>(mipp::sub<T>(zero,r))));
 // }
 
-// template <typename T>
+// templates <typename T>
 // inline reg coth(const reg r)
 // {
 // 	mipp::reg zero = mipp::set0<T>();
@@ -824,21 +824,21 @@ inline reg atanh(const reg r)
 // 	return mipp::div<T>(mipp::add<T>(epx, emx), mipp::sub<T>(epx, emx));
 // }
 
-// template <typename T>
+// templates <typename T>
 // inline reg acsch(const reg r)
 // {
 // 	mipp::reg one = mipp::set1<T>((T)1);
 // 	return mipp::log<T>(mipp::div<T>(mipp::add<T>(one, mipp::sqrt<T>(mipp::add<T>(one, mipp::mul<T>(r, r)))), r));
 // }
 
-// template <typename T>
+// templates <typename T>
 // inline reg asech(const reg r)
 // {
 // 	mipp::reg one = mipp::set1<T>((T)1);
 // 	return mipp::log<T>(mipp::div<T>(mipp::add<T>(one, mipp::sqrt<T>(mipp::sub<T>(one, mipp::mul<T>(r, r)))), r));
 // }
 
-// template <typename T>
+// templates <typename T>
 // inline reg acoth(const reg r)
 // {
 // 	mipp::reg one = mipp::set1<T>((T)1);

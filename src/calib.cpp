@@ -47,7 +47,7 @@ calib::calib(QWidget *parent) :
         cout << "标定计算..." << endl;
         cv::calibrateCamera(objpoints, imgpoints, size1, cameraMatrix, distCoeffs, r, t);
 
-        cv::FileStorage fs("../config/calib.yaml", cv::FileStorage::WRITE);
+        cv::FileStorage fs("../config/calib_bak1.yaml", cv::FileStorage::WRITE);
         fs << "ImageWidth" << size1.width;
         fs << "ImageHeight" << size1.height;
         fs << "CameraMatrix" << cameraMatrix << "DistCoeffs" << distCoeffs;
@@ -82,10 +82,6 @@ calib::calib(QWidget *parent) :
         }
 
         scene->clear();
-        int col = ui->lineEdit->text().toInt();
-        int row = ui->lineEdit_2->text().toInt();
-        int dis = ui->lineEdit_3->text().toInt();
-
         // color
         cv::Mat originMat;
         cvtColor(frame, frame, cv::COLOR_BGR2RGB);
@@ -96,7 +92,7 @@ calib::calib(QWidget *parent) :
 
         std::vector<cv::Point2f> corner;
 
-        bool f = cv::findChessboardCorners(gray, cv::Size(col, row), corner,
+        bool f = cv::findChessboardCorners(gray, cv::Size(patternSize.longitudinal, patternSize.transverse), corner,
                                            cv::CALIB_CB_ADAPTIVE_THRESH | cv::CALIB_CB_FAST_CHECK |
                                            cv::CALIB_CB_NORMALIZE_IMAGE);
 
@@ -105,19 +101,18 @@ calib::calib(QWidget *parent) :
 
             cv::TermCriteria criteria(cv::TermCriteria::EPS | cv::TermCriteria::MAX_ITER, 30, 0.001);
             cv::cornerSubPix(gray, corner, cv::Size(11, 11), cv::Size(-1, -1), criteria);
-            cv::drawChessboardCorners(frame, cv::Size(col, row), corner, f);
-
-            std::vector<cv::Point3f> objp;
-            // 初始化点，cv::Point3f(j, i, 0) 保存的是 x,y,z 坐标。
-            for (int i{0}; i < col; i++) {
-                for (int j{0}; j < row; j++) {
-                    objp.push_back(cv::Point3f(j * dis * 0.01, i * dis * 0.01, 0));
-                }
-            }
+            cv::drawChessboardCorners(frame, cv::Size(patternSize.longitudinal, patternSize.transverse), corner, f);
 
             // 只有检测到角点才能拍照
             if (isCap) {
                 cv::bitwise_not(frame, frame);
+                std::vector<cv::Point3f> objp;
+                // 初始化点，cv::Point3f(j, i, 0) 保存的是 x,y,z 坐标。
+                for (int i = 0; i < patternSize.transverse; i++) {
+                    for (int j = 0; j < patternSize.longitudinal; j++) {
+                        objp.emplace_back(i * patternSize.dis * 0.01, j * patternSize.transverse * 0.01, 0);
+                    }
+                }
                 // todo 这里做角点的push back操作....
                 imgpoints.push_back(corner);
                 objpoints.push_back(objp);
@@ -164,10 +159,22 @@ calib::calib(QWidget *parent) :
         isOpen = !isOpen;
         if (isOpen) {
             ui->pushButton_1->setText("关闭相机");
+            // 设置patern size
+            patternSize.longitudinal = ui->lineEdit->text().toInt();
+            patternSize.transverse = ui->lineEdit_2->text().toInt();
+            patternSize.dis = ui->lineEdit_3->text().toInt();
+            ui->radioButton->setEnabled(false);
+            ui->lineEdit->setEnabled(false);
+            ui->lineEdit_2->setEnabled(false);
+            ui->lineEdit_3->setEnabled(false);
             m_timer->start();
             m_thread->start();
         } else {
             ui->pushButton_1->setText("打开相机");
+            ui->radioButton->setEnabled(true);
+            ui->lineEdit->setEnabled(true);
+            ui->lineEdit_2->setEnabled(true);
+            ui->lineEdit_3->setEnabled(true);
             m_timer->stop();
             scene->clear();
             m_thread->quit();

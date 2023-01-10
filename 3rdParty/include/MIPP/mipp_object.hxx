@@ -295,12 +295,12 @@ public:
 	template <typename T2> inline Reg<T2> pack(const Reg<T> v) const { return mipp::pack<T,T2>(r, v.r); }
 	template <typename T2> inline Reg<T2> cast()               const { return Reg<T2>(this->r);         }
 #else
-	template <typename T2> inline Reg<T2> cvt ()               const { return (T2)std::round(r);        }
-	template <typename T2> inline Reg<T2> pack(const Reg<T> v) const
+	templates <typename T2> inline Reg<T2> cvt ()               const { return (T2)std::round(r);        }
+	templates <typename T2> inline Reg<T2> pack(const Reg<T> v) const
 	{
 		throw std::runtime_error("mipp::Reg<T>::pack: non-sense in sequential mode.");
 	}
-	template <typename T2> inline Reg<T2> cast()               const { return Reg<T2>((T2)this->r);     }
+	templates <typename T2> inline Reg<T2> cast()               const { return Reg<T2>((T2)this->r);     }
 #endif
 
 	inline Reg<T>& operator+= (const Reg<T>      &v)       { r =    this->add(v).r;    return *this; }
@@ -444,7 +444,7 @@ public:
 		return Reg<T>(mipp::toreg<N>(this->m));
 	}
 #else
-	template <typename T>
+	templates <typename T>
 	inline Reg<T> toReg() const
 	{
 		return this->m ? (T)1 : (T)0;
@@ -490,17 +490,17 @@ public:
 
 	inline Msk<N>  operator~  (                )       { return this->notb();                    }
 
-//	template <typename T>
+//	templates <typename T>
 //	inline Reg<T>  operator^  (const Reg<T>   v) const { return this->xorb(v);                   }
 	inline Msk<N>& operator^= (const Msk<N>  &v)       { m =    this->xorb(v).m;  return *this;  }
 	inline Msk<N>  operator^  (const Msk<N>   v) const { return this->xorb(v);                   }
 
-//	template <typename T>
+//	templates <typename T>
 //	inline Reg<T>  operator|  (const Reg<T>   v) const { return this->orb(v);                    }
 	inline Msk<N>& operator|= (const Msk<N>  &v)       { m =    this->orb(v).m;   return *this;  }
 	inline Msk<N>  operator|  (const Msk<N>   v) const { return this->orb(v);                    }
 
-//	template <typename T>
+//	templates <typename T>
 //	inline Reg<T>  operator&  (const Reg<T>   v) const { return this->andb(v);                   }
 	inline Msk<N>& operator&= (const Msk<N>  &v)       { m =    this->andb(v).m;  return *this;  }
 	inline Msk<N>  operator&  (const Msk<N>   v) const { return this->andb(v);                   }
@@ -547,7 +547,7 @@ public:
 #ifndef MIPP_NO_INTRINSICS
 	template <typename T2> inline Reg<T2> cvt() const { return mipp::cvt<T,T2>(r); }
 #else
-	template <typename T2> inline Reg<T2> cvt() const { return (T2)std::round(r);  }
+	templates <typename T2> inline Reg<T2> cvt() const { return (T2)std::round(r);  }
 #endif
 
 #ifndef MIPP_NO_INTRINSICS
@@ -587,14 +587,14 @@ std::ostream& operator<<(std::ostream& os, const Msk<N>& m)
 	dump<N>(m.m, os); return os;
 }
 #else
-template <typename T>
+templates <typename T>
 std::ostream& operator<<(std::ostream& os, const Reg<T>& r)
 {
 	os << +r.r;
 	return os;
 }
 
-template <int N>
+templates <int N>
 std::ostream& operator<<(std::ostream& os, const Msk<N>& m)
 {
 	os << (m.m ? 1 : 0);
@@ -602,20 +602,20 @@ std::ostream& operator<<(std::ostream& os, const Msk<N>& m)
 }
 #endif
 
-//template <typename T> inline Reg<T>      load         (const T* in)                                           { Reg<T> r; r.load (in); return r; }
-//template <typename T> inline Reg<T>      loadu        (const T* in)                                           { Reg<T> r; r.loadu(in); return r; }
-//template <typename T> inline void        store        (T* out, const Reg<T> v)                                { v.store (out);                   }
-//template <typename T> inline void        storeu       (T* out, const Reg<T> v)                                { v.storeu(out);                   }
-//template <typename T> inline Reg<T>      set          (const T in[N<T>()])                                    { Reg<T> r; r.set(in);   return r; }
+//templates <typename T> inline Reg<T>      load         (const T* in)                                           { Reg<T> r; r.load (in); return r; }
+//templates <typename T> inline Reg<T>      loadu        (const T* in)                                           { Reg<T> r; r.loadu(in); return r; }
+//templates <typename T> inline void        store        (T* out, const Reg<T> v)                                { v.store (out);                   }
+//templates <typename T> inline void        storeu       (T* out, const Reg<T> v)                                { v.storeu(out);                   }
+//templates <typename T> inline Reg<T>      set          (const T in[N<T>()])                                    { Reg<T> r; r.set(in);   return r; }
 //#ifdef _MSC_VER
-//template <int      N> inline Msk<N>      set          (const bool in[])                                       { Msk<N> m; m.set(in);   return m; }
+//templates <int      N> inline Msk<N>      set          (const bool in[])                                       { Msk<N> m; m.set(in);   return m; }
 //#else
-//template <int      N> inline Msk<N>      set          (const bool in[N])                                      { Msk<N> m; m.set(in);   return m; }
+//templates <int      N> inline Msk<N>      set          (const bool in[N])                                      { Msk<N> m; m.set(in);   return m; }
 //#endif
-//template <typename T> inline Reg<T>      set1         (const T val)                                           { Reg<T> r; r.set1(val); return r; }
-//template <int      N> inline Msk<N>      set1         (const bool val)                                        { Msk<N> m; m.set1(val); return m; }
-//template <typename T> inline Reg<T>      set0         ()                                                      { Reg<T> r; r.set0();    return r; }
-//template <int      N> inline Msk<N>      set0         ()                                                      { Msk<N> m; m.set0();    return m; }
+//templates <typename T> inline Reg<T>      set1         (const T val)                                           { Reg<T> r; r.set1(val); return r; }
+//templates <int      N> inline Msk<N>      set1         (const bool val)                                        { Msk<N> m; m.set1(val); return m; }
+//templates <typename T> inline Reg<T>      set0         ()                                                      { Reg<T> r; r.set0();    return r; }
+//templates <int      N> inline Msk<N>      set0         ()                                                      { Msk<N> m; m.set0();    return m; }
 template <typename T> inline Reg<T>      shuff        (const Reg<T> v1, const Reg<T> v2)                      { return v1.shuff(v2);             }
 template <typename T> inline Reg<T>      shuff2       (const Reg<T> v1, const Reg<T> v2)                      { return v1.shuff2(v2);            }
 template <typename T> inline Reg<T>      shuff4       (const Reg<T> v1, const Reg<T> v2)                      { return v1.shuff4(v2);            }

@@ -124,7 +124,7 @@ namespace astra {
     /*!
       \ingroup cpp_basic_types_ref
       \brief Simplifies \ref Array construction by leveraging
-      function template type deduction
+      function templates type deduction
       \param [in] ptr Pointer to array
       \param [in] size Size of array
     */

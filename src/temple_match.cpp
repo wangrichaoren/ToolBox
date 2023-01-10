@@ -256,7 +256,7 @@ void temple_match::clickTrainBtn() {
             system(cmd.data());
             detector.writeClasses(save_root_dir + "train.yaml");
             shapes.save_infos(infos_have_templ, save_root_dir + "train_info.yaml");
-            imwrite(save_root_dir + "template.png", to_show);
+            imwrite(save_root_dir + "templates.png", to_show);
             showMessageBox(this, ("保存模板[" + res.second + "]完成").data());
             break;
         }
@@ -264,8 +264,8 @@ void temple_match::clickTrainBtn() {
 
     ui->comboBox->addItem(res.second.data());
     ui->comboBox->setCurrentText(res.second.data());
-    auto q = QImage((save_root_dir + "template.png").data());
-//    m_Image_temp->graphics(q, save_root_dir + "template.png");
+    auto q = QImage((save_root_dir + "templates.png").data());
+//    m_Image_temp->graphics(q, save_root_dir + "templates.png");
 }
 
 void temple_match::clickDetBtn() {
@@ -424,8 +424,8 @@ void temple_match::initUpdateInfo() {
         ui->comboBox->setCurrentText(last_template.data());
         string save_root_dir = path + last_template + "/";
         try {
-            auto q = QImage((save_root_dir + "template.png").data());
-            m_Image_temp->graphics(q, save_root_dir + "template.png");
+            auto q = QImage((save_root_dir + "templates.png").data());
+            m_Image_temp->graphics(q, save_root_dir + "templates.png");
 //            m_Image_temp->setScale(0.26738);
 //            cout<<"scale value:"<<endl;
 //            cout << m_Image_temp->getScaleValue()

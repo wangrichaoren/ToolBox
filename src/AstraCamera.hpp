@@ -2,11 +2,10 @@
 #include <stdio.h>
 #include <opencv2/opencv.hpp>
 #include "astra/astra_core/capi/astra_core.h"
+#include <unistd.h>
 
-struct ImageDataMat {
-    cv::Mat c_mat;
-    cv::Mat d_mat;
-};
+#ifndef _ASTRA_CAMERA_
+#define _ASTRA_CAMERA_
 
 enum SteamMode {
     RGB,
@@ -54,10 +53,10 @@ public:
         astra_reader_destroy(&reader);
         astra_streamset_close(&sensor);
         astra_terminate();
-        printf("关闭camera!");
+        printf("关闭ASTRA CAMERA!");
     }
 
-    void start(SteamMode e) {
+    inline void start(SteamMode e) {
         if (e == ALL) {
             astra_stream_start(colorStream);
             astra_stream_start(depthStream);
@@ -72,15 +71,16 @@ public:
         }
     }
 
-    void stop() {
+    inline void stop() {
         astra_stream_stop(colorStream);
         astra_stream_stop(depthStream);
         isRGB = false;
         isDepth = false;
     }
 
-    void pause() {
-        isPause = !isPause;
+    void pause(bool f) {
+        isPause = f;
+//        isPause = !isPause;
     }
 
     bool checkIsOpen() {
@@ -90,7 +90,7 @@ public:
         return true;
     }
 
-    void updateFrame() {
+    inline void updateFrame() {
         if ((isRGB + isDepth) == 0) {
             throw std::runtime_error("相机请先start，在update frame!");
         }
@@ -103,7 +103,6 @@ public:
 
         astra_reader_frame_t frame;
         astra_status_t rc = astra_reader_open_frame(reader, 0, &frame);
-
         if (rc == ASTRA_STATUS_SUCCESS) {
             astra_frame_index_t newFrameIndex;
 
@@ -133,7 +132,7 @@ public:
     };
 
 
-    void print_color(astra_colorframe_t colorFrame) {
+    inline void print_color(astra_colorframe_t colorFrame) {
         astra_image_metadata_t metadata;
         astra_rgb_pixel_t *colorData_rgb;
 
@@ -155,7 +154,7 @@ public:
         }
     };
 
-    void print_depth(astra_depthframe_t depthFrame) {
+    inline void print_depth(astra_depthframe_t depthFrame) {
         astra_image_metadata_t metadata;
 
         int16_t *depthData;
@@ -171,35 +170,29 @@ public:
         int height = metadata.height;
 
         cv::Mat tmpMat(height, width, CV_16UC1, depthData);
+        // 在free掉数组指针前，copy一份Mat，否则深度信息拿到的有问题
+        cv::Mat dst;
+        tmpMat.copyTo(dst);
 
-
-        astra_frame_index_t frameIndex;
-        astra_depthframe_get_frameindex(depthFrame, &frameIndex);
-
-        if (!tmpMat.empty()) {
-            dMat = tmpMat;
-//            tmpMat.release();
-        }
         free(depthData);
+
+        if (!dst.empty()) {
+            dMat = dst;
+        }
     }
 
-    cv::Mat getColorMat() {
+    inline cv::Mat getColorMat() {
         if (!cMat.empty()) {
             return cMat;
         }
     }
 
-    cv::Mat getDepthMat() {
+    inline cv::Mat getDepthMat() {
         if (!dMat.empty()) {
             return dMat;
         }
     }
 
-//    ImageDataMat getAllMat() {
-//        ImageDataMat data;
-//        data.c_mat = cMat;
-//        data.d_mat = dMat;
-//        return data;
-//    }
-
 };
+
+#endif //_ASTRA_CAMERA_

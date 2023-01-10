@@ -98,20 +98,20 @@ namespace astra {
 
 namespace astra {
 
-template<class _Ty> struct _Unique_if {
+templates<class _Ty> struct _Unique_if {
    typedef std::unique_ptr<_Ty> _Single_object;
 };
 
-template<class _Ty> struct _Unique_if<_Ty[]> {
+templates<class _Ty> struct _Unique_if<_Ty[]> {
    typedef std::unique_ptr<_Ty[]> _Unknown_bound;
 };
 
-template<class _Ty, size_t N> struct _Unique_if<_Ty[N]> {
+templates<class _Ty, size_t N> struct _Unique_if<_Ty[N]> {
    typedef void _Known_bound;
 };
 
 //
-// template< class T, class... Args >
+// templates< class T, class... Args >
 // unique_ptr<T> make_unique( Args&&... args);
 //
 
@@ -121,7 +121,7 @@ template<class _Ty, size_t N> struct _Unique_if<_Ty[N]> {
 // The _VARIADIC_EXPAND_0X stuff is defined in <xstddef>
 #define _MAKE_UNIQUE( \
    TEMPLATE_LIST, PADDING_LIST, LIST, COMMA, X1, X2, X3, X4) \
-   template<class _Ty COMMA LIST(_CLASS_TYPE)> inline \
+   templates<class _Ty COMMA LIST(_CLASS_TYPE)> inline \
       typename _Unique_if<_Ty>::_Single_object make_unique(LIST(_TYPE_REFREF_ARG)) \
    { \
       return unique_ptr<_Ty>(new _Ty(LIST(_FORWARD_ARG))); \
@@ -132,7 +132,7 @@ _VARIADIC_EXPAND_0X(_MAKE_UNIQUE, , , , )
 
 #else // not MSVC 11.0 or earlier
 
-template<class _Ty, class... Args>
+templates<class _Ty, class... Args>
    typename _Unique_if<_Ty>::_Single_object
    make_unique(Args&&... args) {
       return std::unique_ptr<_Ty>(new _Ty(std::forward<Args>(args)...));
@@ -140,24 +140,24 @@ template<class _Ty, class... Args>
 
 #endif
 
-// template< class T >
+// templates< class T >
 // unique_ptr<T> make_unique( std::size_t size );
 
-template<class _Ty>
+templates<class _Ty>
    typename _Unique_if<_Ty>::_Unknown_bound
    make_unique(size_t n) {
       typedef typename std::remove_extent<_Ty>::type U;
       return std::unique_ptr<_Ty>(new U[n]());
    }
 
-// template< class T, class... Args >
+// templates< class T, class... Args >
 // /* unspecified */ make_unique( Args&&... args ) = delete;
 
 // MSVC 11.0 doesn't support deleted functions, so the best we can do
 // is simply not define the function.
 #if !(defined(_MSC_VER) && (_MSC_VER < 1800))
 
-template<class T, class... Args>
+templates<class T, class... Args>
    typename _Unique_if<T>::_Known_bound
    make_unique(Args&&...) = delete;
 

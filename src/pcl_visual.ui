@@ -6,28 +6,67 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>887</width>
-    <height>776</height>
+    <width>868</width>
+    <height>846</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>点云查看器</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="1" column="0">
+   <item row="4" column="1">
+    <widget class="QPushButton" name="savePushButton">
+     <property name="text">
+      <string>保存点云</string>
+     </property>
+    </widget>
+   </item>
+   <item row="5" column="1">
+    <widget class="QPushButton" name="pushButton_2">
+     <property name="text">
+      <string>格式转换</string>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="1">
     <widget class="QPushButton" name="pushButton">
+     <property name="maximumSize">
+      <size>
+       <width>160</width>
+       <height>16777215</height>
+      </size>
+     </property>
+     <property name="sizeIncrement">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="baseSize">
+      <size>
+       <width>160</width>
+       <height>0</height>
+      </size>
+     </property>
      <property name="text">
       <string>打开文件</string>
      </property>
     </widget>
    </item>
-   <item row="0" column="0">
+   <item row="0" column="0" colspan="3">
     <widget class="QVTKWidget" name="qvtkWidget"/>
    </item>
-   <item row="2" column="0">
-    <widget class="QPushButton" name="pushButton_2">
+   <item row="3" column="1">
+    <widget class="QPushButton" name="openPushButton">
      <property name="text">
-      <string>格式转换</string>
+      <string>启动相机</string>
+     </property>
+    </widget>
+   </item>
+   <item row="2" column="1">
+    <widget class="QPushButton" name="showCoordPushButton">
+     <property name="text">
+      <string>显示坐标轴</string>
      </property>
     </widget>
    </item>

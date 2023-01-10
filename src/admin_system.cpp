@@ -19,6 +19,7 @@ admin_system::admin_system(QWidget *parent) :
     setIconToLabel(ui->label_1, ":/icons/星空.png");
     setIconToLabel(ui->label_2, ":/icons/沙滩.png");
     setIconToLabel(ui->label_3, ":/icons/秋天.png");
+    setIconToLabel(ui->label_4, ":/icons/瀑布.png");
 
 //    connect(ui->pushButton_1,)
     connect(ui->pushButton_1, &QPushButton::clicked, this, &admin_system::clickTempleMatchBtn);
@@ -37,7 +38,7 @@ void admin_system::clickTempleMatchBtn() {
     auto tm = new temple_match(this);
     tm->show();
     tm->exec();
-    cout << "exec template match" << endl;
+    cout << "exec templates match" << endl;
     delete tm;
     this->setEnabled(true);
 }

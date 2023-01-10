@@ -87,7 +87,7 @@ inline NodeType::value Node::Type() const {
 
 // access
 
-// template helpers
+// templates helpers
 template <typename T, typename S>
 struct as_if {
   explicit as_if(const Node& node_) : node(node_) {}

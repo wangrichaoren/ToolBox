@@ -163,7 +163,7 @@ typedef struct __tag_ASVL_OFFSCREEN
 	MInt32	pi32Pitch[4];
 }ASVLOFFSCREEN, *LPASVLOFFSCREEN;
 
-/*Define the SDK Version infos. This is the template!!!*/		
+/*Define the SDK Version infos. This is the templates!!!*/
 typedef struct __tag_ASVL_VERSION
 {
 	    MLong lCodebase;             	// Codebase version number 

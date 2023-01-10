@@ -15,7 +15,7 @@ namespace YAML {
  * @brief The DeepRecursion class
  *  An exception class which is thrown by DepthGuard. Ideally it should be
  * a member of DepthGuard. However, DepthGuard is a templated class which means
- * that any catch points would then need to know the template parameters. It is
+ * that any catch points would then need to know the templates parameters. It is
  * simpler for clients to not have to know at the catch point what was the
  * maximum depth.
  */

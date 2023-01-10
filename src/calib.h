@@ -24,6 +24,11 @@ QT_BEGIN_NAMESPACE
 namespace Ui { class calib; }
 QT_END_NAMESPACE
 
+struct PatternSize {
+    int longitudinal;  // 纵向  5
+    int transverse;  // 横向  8
+    int dis;
+};
 
 class VisualThread : public QObject {
 Q_OBJECT
@@ -67,6 +72,7 @@ private:
     bool isCap = false;
     int value = 0;
     cv::Size size1;
+    PatternSize patternSize;
 
     // 输出的相机内参、畸变等信息
     cv::Mat cameraMatrix;

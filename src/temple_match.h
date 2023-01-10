@@ -22,7 +22,7 @@ using namespace std;
 //namespace fs = std::experimental::filesystem;
 
 
-const string path{"../datas/"};
+const string path{"../datas/templates/"};
 const string cfg_path{"../config/cfg.yaml"};
 
 

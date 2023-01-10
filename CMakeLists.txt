@@ -36,16 +36,23 @@ find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
 find_package(OpenCV REQUIRED)
 # vtk
-set(VTK_DIR "/usr/local/lib/cmake/vtk-8.2")
-find_package(VTK REQUIRED)
-include(${VTK_USE_FILE})
+#set(VTK_DIR "/usr/local/lib/cmake/vtk-8.2")
+#find_package(VTK REQUIRED)
+#include(${VTK_USE_FILE})
+
+# cuda相关-用于加速pcl
+#find_package(CUDA REQUIRED)
+#INCLUDE(FindCUDA)
+#message("cuda lib:-----" ${FindCUDA})
+#cuda_add_executable (pcl_points_gpu pcl_points_gpu.cpp gpu_draw_cloud.cu)
+
 
 # 导入astra相机驱动
 find_package(Astra REQUIRED)
 # ------导入pcl------
-if(NOT DEFINED CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
+if (NOT DEFINED CMAKE_SUPPRESS_DEVELOPER_WARNINGS)
     set(CMAKE_SUPPRESS_DEVELOPER_WARNINGS 1 CACHE INTERNAL "No dev warnings")
-endif()
+endif ()
 find_package(PCL REQUIRED)
 include_directories(${PCL_INCLUDE_DIRS})
 link_directories(${PCL_LIBRARY_DIRS})
@@ -78,12 +85,15 @@ set(YAMLCPP ${PROJECT_SOURCE_DIR}/3rdParty/lib/yaml-cpp/libyaml-cpp.a)
 set(ARCSOFT_FACE "${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face.so" "${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face_engine.so")
 
 add_executable(ToolBox main.cpp ${SOURCE} ${RESOURCES} ${LIND2DUP})
-add_executable(test_pcl test/test_pcl.cpp)
-add_executable(testAstraCam test/testAstraCam.cpp)
+add_executable(test_camera_calib test/test_camera_calib.cpp)
+add_executable(test_capture_images test/test_capture_images.cpp)
+#add_executable(test_pcl test/test_pcl.cpp)
+#add_executable(testAstraCam test/testAstraCam.cpp)
 
-#message("vtk lib: " ${VTK_LIBRARIES})
-target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${PCL_LIBRARIES}  ${VTK_LIBRARIES})
-target_link_libraries(test_pcl  ${PCL_LIBRARIES} ${OpenCV_LIBS})
-target_link_libraries(testAstraCam  ${ASTRA_LIBRARIES} ${OpenCV_LIBS})
+target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${PCL_LIBRARIES})
+target_link_libraries(test_camera_calib ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
+target_link_libraries(test_capture_images ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
+#target_link_libraries(test_pcl  ${PCL_LIBRARIES} ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
+#target_link_libraries(testAstraCam  ${ASTRA_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
 
 install(TARGETS ToolBox RUNTIME DESTINATION bin)
