@@ -9,10 +9,13 @@
 #include <QWidget>
 #include <QFileDialog>
 #include <vtkRenderWindow.h>
+//#include <pcl/io/pcd_io.h>
 #include<pcl/io/pcd_io.h>
 #include<pcl/io/ply_io.h>
 #include<pcl/point_types.h>
 #include<pcl/visualization/pcl_visualizer.h>
+#include <pcl/common/transforms.h>
+#include <Eigen/Eigen>
 #include "utils.h"
 #include "AstraCamera.hpp"
 #include <QTimer>

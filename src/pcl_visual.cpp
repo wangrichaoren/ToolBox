@@ -17,6 +17,11 @@ pcl_visual::pcl_visual(QWidget *parent) :
 
     initialVtkWidget();
 
+    // 用于显示的绕x旋转
+    Eigen::Affine3f rota_x = Eigen::Affine3f::Identity();
+    float theta = M_PI;
+    rota_x.rotate(Eigen::AngleAxisf(theta, Eigen::Vector3f::UnitX()));
+
     // 加载相机内参
     cv::FileStorage paramFs("../config/calib_bak1.yaml", cv::FileStorage::READ);
     camera_fx = paramFs["fx"];
@@ -60,9 +65,9 @@ pcl_visual::pcl_visual(QWidget *parent) :
                 pcl::PointXYZRGB p;
 
                 // 计算这个点的空间坐标
-                p.z = double(d) / 10000; //单位是米
-                p.x = (u - camera_cx) * p.z / camera_fx;
-                p.y = (v - camera_cy) * p.z / camera_fy;
+                p.z = float_t(d) / 10000; //单位是米
+                p.x = float_t(u - camera_cx) * p.z / camera_fx;
+                p.y = float_t(v - camera_cy) * p.z / camera_fy;
 
                 // 从rgb图像中获取它的颜色
                 // rgb是三通道的BGR格式图，所以按下面的顺序获取颜色
@@ -78,9 +83,36 @@ pcl_visual::pcl_visual(QWidget *parent) :
 //        cloud->width = cloud->points.size();
 //        cloud->is_dense = false;
 //        viewer->addCoordinateSystem(0.2);
+        pcl::PointCloud<pcl::PointXYZRGB>::Ptr show_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
+        pcl::transformPointCloud(*cloud, *show_cloud, rota_x);
         viewer->removePointCloud("cloud");
-        viewer->addPointCloud<pcl::PointXYZRGB>(cloud, "cloud");
+        viewer->addPointCloud<pcl::PointXYZRGB>(show_cloud, "cloud");
         ui->qvtkWidget->update();
+    });
+
+    // save push btn
+    connect(ui->savePushButton, &QPushButton::clicked, [=] {
+        qDebug("点击了保存点云按钮");
+        cloud->height = 1;
+        cloud->width = cloud->points.size();
+        cloud->is_dense = false;
+        std::string fileName;
+        while (true) {
+            auto f = showInputBox(this, "保存点云", "保存的点云名称: ");
+            if (!f.first) {
+                showMessageBox(this, "点云保存失败!");
+                return;
+            }
+            fileName = f.second;
+            if (fileName.empty()) {
+                showMessageBox(this, "点云名称不能为空!");
+                continue;
+            } else {
+                break;
+            }
+        }
+        std::string savePath = "../datas/point_clouds/" + fileName + ".pcd";
+        pcl::io::savePCDFile(savePath, *cloud, true);
     });
 
     // 按钮的信号
@@ -92,7 +124,6 @@ pcl_visual::pcl_visual(QWidget *parent) :
         isOpen = !isOpen;
         if (isOpen) {
             m_cam->pause(false);
-//            m_cam->startCam();
             ui->openPushButton->setText("关闭相机");
             ui->savePushButton->setEnabled(true);
             m_timer->start();
@@ -101,7 +132,9 @@ pcl_visual::pcl_visual(QWidget *parent) :
 
         } else {
             m_cam->pause(true);
-//            m_cam->stopCam();
+            // 移除掉控件显示的点云
+            viewer->removePointCloud("cloud");
+
             ui->openPushButton->setText("开启相机");
             ui->savePushButton->setEnabled(false);
             m_timer->stop();
@@ -140,7 +173,7 @@ void pcl_visual::onFormatConversion() {
 
 void pcl_visual::onOpen() {
     qDebug("点击了打开.");
-    std::string fileName = QFileDialog::getOpenFileName(this, "Open PointCloud", ".",
+    std::string fileName = QFileDialog::getOpenFileName(this, "Open PointCloud", "../datas/point_clouds",
                                                         "Open PCD/PLY files(*.pcd *.ply)").toStdString();
     if (fileName.empty()) {
         std::cout << "未选择点云文件." << std::endl;

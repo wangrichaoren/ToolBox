@@ -84,15 +84,15 @@ set(LIND2DUP src/line2Dup.cpp src/face_detect.cpp src/face_detect.h src/face_det
 set(YAMLCPP ${PROJECT_SOURCE_DIR}/3rdParty/lib/yaml-cpp/libyaml-cpp.a)
 set(ARCSOFT_FACE "${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face.so" "${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face_engine.so")
 
-add_executable(ToolBox main.cpp ${SOURCE} ${RESOURCES} ${LIND2DUP})
-add_executable(test_camera_calib test/test_camera_calib.cpp)
-add_executable(test_capture_images test/test_capture_images.cpp)
+add_executable(ToolBox main.cpp ${SOURCE} ${RESOURCES} ${LIND2DUP})  # 主程序
+#add_executable(test_camera_calib test/test_camera_calib.cpp)
+#add_executable(test_capture_images test/test_capture_images.cpp)
 #add_executable(test_pcl test/test_pcl.cpp)
 #add_executable(testAstraCam test/testAstraCam.cpp)
 
 target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${PCL_LIBRARIES})
-target_link_libraries(test_camera_calib ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
-target_link_libraries(test_capture_images ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
+#target_link_libraries(test_camera_calib ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
+#target_link_libraries(test_capture_images ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
 #target_link_libraries(test_pcl  ${PCL_LIBRARIES} ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
 #target_link_libraries(testAstraCam  ${ASTRA_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
 

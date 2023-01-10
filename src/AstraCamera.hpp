@@ -53,7 +53,7 @@ public:
         astra_reader_destroy(&reader);
         astra_streamset_close(&sensor);
         astra_terminate();
-        printf("关闭ASTRA CAMERA!");
+        std::cout << "关闭ASTRA CAMERA!" << std::endl;
     }
 
     inline void start(SteamMode e) {
