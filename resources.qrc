@@ -3,13 +3,13 @@
         <file>icons/icon.png</file>
         <file>icons/encoder.png</file>
         <file>icons/exit.png</file>
-        <file>icons/星空.png</file>
-        <file>icons/数据.png</file>
-        <file>icons/包装.png</file>
-        <file>icons/开发.png</file>
-        <file>icons/个人.png</file>
-        <file>icons/沙滩.png</file>
-        <file>icons/秋天.png</file>
-        <file>icons/瀑布.png</file>
+        <file>icons/icon1.png</file>
+        <file>icons/icon2.png</file>
+        <file>icons/icon3.png</file>
+        <file>icons/icon4.png</file>
+        <file>icons/icon5.png</file>
+        <file>icons/icon6.png</file>
+        <file>icons/icon7.png</file>
+        <file>icons/icon8.png</file>
     </qresource>
 </RCC>
