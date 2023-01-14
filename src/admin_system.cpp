@@ -16,10 +16,10 @@
 admin_system::admin_system(QWidget *parent) :
         QDialog(parent), ui(new Ui::admin_system) {
     ui->setupUi(this);
-    setIconToLabel(ui->label_1, ":/icons/星空.png");
-    setIconToLabel(ui->label_2, ":/icons/沙滩.png");
-    setIconToLabel(ui->label_3, ":/icons/秋天.png");
-    setIconToLabel(ui->label_4, ":/icons/瀑布.png");
+    setIconToLabel(ui->label_1, ":/icons/icon5.png");
+    setIconToLabel(ui->label_2, ":/icons/icon6.png");
+    setIconToLabel(ui->label_3, ":/icons/icon8.png");
+    setIconToLabel(ui->label_4, ":/icons/icon7.png");
 
 //    connect(ui->pushButton_1,)
     connect(ui->pushButton_1, &QPushButton::clicked, this, &admin_system::clickTempleMatchBtn);

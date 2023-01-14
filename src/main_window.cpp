@@ -24,10 +24,10 @@ main_window::main_window(QWidget *parent) :
     this->setWindowIcon(QIcon(":/icons/icon.png"));
 
 
-    setIconToLabel(ui->label7, ":/icons/数据.png");
-    setIconToLabel(ui->label8, ":/icons/包装.png");
-    setIconToLabel(ui->label9, ":/icons/开发.png");
-    setIconToLabel(ui->label10, ":/icons/个人.png");
+    setIconToLabel(ui->label7, ":/icons/icon4.png");
+    setIconToLabel(ui->label8, ":/icons/icon2.png");
+    setIconToLabel(ui->label9, ":/icons/icon3.png");
+    setIconToLabel(ui->label10, ":/icons/icon1.png");
 
     setIconToLabel(ui->label1, ":/icons/encoder.png");
 
