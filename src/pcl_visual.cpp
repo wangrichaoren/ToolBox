@@ -17,17 +17,23 @@ pcl_visual::pcl_visual(QWidget *parent) :
 
     initialVtkWidget();
 
-    // 用于显示的绕x旋转
-    Eigen::Affine3f rota_x = Eigen::Affine3f::Identity();
-    float theta = M_PI;
-    rota_x.rotate(Eigen::AngleAxisf(theta, Eigen::Vector3f::UnitX()));
-
     // 加载相机内参
-    cv::FileStorage paramFs("../config/calib_bak1.yaml", cv::FileStorage::READ);
+    cv::Mat camM = cv::Mat_<double>(3, 3);
+    cv::Mat discM = cv::Mat_<double>(1, 5);
+    cv::FileStorage paramFs("../config/calib.yaml", cv::FileStorage::READ);
+    paramFs["K"] >> camM;
+    paramFs["D"] >> discM;
     camera_fx = paramFs["fx"];
     camera_fy = paramFs["fy"];
     camera_cx = paramFs["cx"];
     camera_cy = paramFs["cy"];
+
+    // 矫正rgb->depth 系数，单位 像素
+    cv::Mat t_mat = cv::Mat::zeros(2, 3, CV_32FC1);
+    t_mat.at<float>(0, 0) = 1;
+    t_mat.at<float>(0, 2) = 20; //水平平移量
+    t_mat.at<float>(1, 1) = 1;
+    t_mat.at<float>(1, 2) = -8; //竖直平移量
 
     m_timer = new QTimer;
     m_thread = new QThread;
@@ -52,7 +58,13 @@ pcl_visual::pcl_visual(QWidget *parent) :
     // 定时器
     connect(m_timer, &QTimer::timeout, m_cam, &CamVisual::timeOutSlot, Qt::DirectConnection);
 
-    connect(m_cam, &CamVisual::sign_send_mat, [=](cv::Mat color, cv::Mat depth) {
+    connect(m_cam, &CamVisual::sign_send_mat, [=](cv::Mat color_, cv::Mat depth) {
+        // 去畸变
+        cv::Mat color;
+        cv::undistort(color_, color, camM, discM);
+
+        cv::warpAffine(depth, depth, t_mat, depth.size());
+
         cloud.reset(new pcl::PointCloud<pcl::PointXYZRGB>());
         for (int v = 0; v < depth.rows; v++)
             for (int u = 0; u < depth.cols; u++) {
@@ -65,7 +77,7 @@ pcl_visual::pcl_visual(QWidget *parent) :
                 pcl::PointXYZRGB p;
 
                 // 计算这个点的空间坐标
-                p.z = float_t(d) / 10000; //单位是米
+                p.z = float_t(d) / 10000; //单位是米 mm->m
                 p.x = float_t(u - camera_cx) * p.z / camera_fx;
                 p.y = float_t(v - camera_cy) * p.z / camera_fy;
 
@@ -79,10 +91,9 @@ pcl_visual::pcl_visual(QWidget *parent) :
                 // 把p加入到点云中
                 cloud->points.push_back(p);
             }
-//        cloud->height = 1;
-//        cloud->width = cloud->points.size();
-//        cloud->is_dense = false;
-//        viewer->addCoordinateSystem(0.2);
+        Eigen::Affine3f rota_x = Eigen::Affine3f::Identity();
+        float theta = M_PI;
+        rota_x.rotate(Eigen::AngleAxisf(theta, Eigen::Vector3f::UnitX()));
         pcl::PointCloud<pcl::PointXYZRGB>::Ptr show_cloud(new pcl::PointCloud<pcl::PointXYZRGB>);
         pcl::transformPointCloud(*cloud, *show_cloud, rota_x);
         viewer->removePointCloud("cloud");

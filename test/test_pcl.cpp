@@ -46,60 +46,80 @@
 
 /**以下为测试深度和rgb生成点云用例**/
 
-//#include <iostream>
-//#include <opencv2/core/core.hpp>
-//#include <opencv2/highgui/highgui.hpp>
-//#include <pcl/point_types.h>
-//#include <pcl/io/pcd_io.h>
+#include <iostream>
+#include <opencv2/core/core.hpp>
+#include <opencv2/highgui/highgui.hpp>
+#include <pcl/point_types.h>
+#include <pcl/io/pcd_io.h>
+#include <opencv2/imgproc.hpp>
+
+using namespace std;
+
+int main(int argc, char **argv) {
+    // 数据读取
+    cv::Mat rgb, depth;
+    rgb = cv::imread("/home/wrc/Desktop/capture_datas/0_color.png", -1);
+    depth = cv::imread("/home/wrc/Desktop/capture_datas/0_depth.png", -1);
+
+//    cv::Rect rect(140, 100, 189 - 140, 177 - 100);
+//    cv::rectangle(rgb, rect, cv::Scalar(255, 0, 0));
+//    cv::rectangle(depth, rect, cv::Scalar(255, 0, 0));
+
+//     left top - 285 212
+//     right down - 311 283  189 177
+//    rgb = rgb(rect);
+//    depth = depth(rect);
 //
-//using namespace std;
-//
-//int main(int argc, char **argv) {
-//    // 数据读取
-//    cv::Mat rgb, depth;
-//    rgb = cv::imread("./rgb.png");
-//    depth = cv::imread("./depth.png", -1);
-//
-////    double cx = 3.1950001165359771e+02;
-////    double cy = 2.3949993846027792e+02;
-////    double fx = 8.7152157967372148e+01;
-////    double fy = 3.5072846783706171e+02;
-////    double depthScale = 1.0;
-//
-//    // 相机内参与缩放系数
-//    double cx = 3.1950052580389416e+02;
-//    double cy = 2.3950196646754412e+02;
-//    double fx = 1.1118634196120907e+02;
-//    double fy = 1.5096567808768597e+02;
-//    double depthScale = 1.0;
-//
-//    // 定义点云使用的格式：这里用的是XYZRGB
-//    typedef pcl::PointXYZRGB PointT;
-//    typedef pcl::PointCloud<PointT> PointCloud;
-//
-//    // 计算每个点对应的XYZRGB值
-//    PointCloud::Ptr pointCloud(new PointCloud);
-//    for (int v = 0; v < rgb.rows; v++)
-//        for (int u = 0; u < rgb.cols; u++) {
-//            unsigned int d = depth.ptr<unsigned short>(v)[u];
-//            if (d == 0)
-//                continue;
-//            PointT p;
-//            p.z = double(d) / depthScale;
-//            p.x = (u - cx) * p.z / fx;
-//            p.y = (v - cy) * p.z / fy;
-//            p.b = rgb.data[v * rgb.step + u * rgb.channels()];
-//            p.g = rgb.data[v * rgb.step + u * rgb.channels() + 1];
-//            p.r = rgb.data[v * rgb.step + u * rgb.channels() + 2];
-//            pointCloud->points.push_back(p);
+
+//    cv::imwrite("/home/wrc/Desktop/capture_datas/rect_color.png", rgb);
+//    cv::imwrite("/home/wrc/Desktop/capture_datas/rect_depth.png", depth);
+
+//    cv::imshow("rect", image_ori);
+//    while (1) {
+//        int k = cv::waitKey();
+//        if (k == 27) {
+//            break;
 //        }
-//
-//    // 点云保存
-//    pointCloud->is_dense = false;
-//    cout << "点云共有" << pointCloud->size() << "个点." << endl;
-//    pcl::io::savePCDFileBinary("./cabinet.pcd", *pointCloud);
-//    return 0;
-//}
+//    }
+
+//    cv::waitKey(300);
+
+    // 相机内参与缩放系数
+//    double cx = 3.1348380900698828e+02; //313
+//    double cy = 2.4305617964195247e+02; //243
+    double cx = 310.24326;
+    double cy = 253.65539;
+    double fx = 577.54679;
+    double fy = 578.63325;
+    double depthScale = 1.0;
+
+    // 定义点云使用的格式：这里用的是XYZRGB
+    typedef pcl::PointXYZRGB PointT;
+    typedef pcl::PointCloud<PointT> PointCloud;
+
+    // 计算每个点对应的XYZRGB值
+    PointCloud::Ptr pointCloud(new PointCloud);
+    for (int v = 0; v < rgb.rows; v++)
+        for (int u = 0; u < rgb.cols; u++) {
+            unsigned int d = depth.ptr<unsigned short>(v)[u];
+            if (d == 0)
+                continue;
+            PointT p;
+            p.z = double(d) / depthScale;
+            p.x = (u - cx) * p.z / fx;
+            p.y = (v - cy) * p.z / fy;
+            p.b = rgb.data[v * rgb.step + u * rgb.channels()];
+            p.g = rgb.data[v * rgb.step + u * rgb.channels() + 1];
+            p.r = rgb.data[v * rgb.step + u * rgb.channels() + 2];
+            pointCloud->points.push_back(p);
+        }
+
+    // 点云保存
+    pointCloud->is_dense = false;
+    cout << "点云共有" << pointCloud->size() << "个点." << endl;
+    pcl::io::savePCDFileBinary("/home/wrc/Desktop/capture_datas/cabin.pcd", *pointCloud);
+    return 0;
+}
 
 
 //#include <iostream>
@@ -408,85 +428,85 @@
 //}
 
 
-#include <opencv2/opencv.hpp>
-#include "src/AstraCamera.hpp"
-#include<pcl/io/pcd_io.h>
-#include<pcl/io/ply_io.h>
-#include<pcl/point_types.h>
-#include<pcl/visualization/pcl_visualizer.h>
-#include <opencv2/core/core.hpp>
-#include <opencv2/highgui/highgui.hpp>
-//#include <pcl/point_types.h>
-//#include <pcl/io/pcd_io.h>
-
-int main() {
-    AstraCamera cam;
-    cam.start(SteamMode::ALL);
-
-    // point cloud visual
-    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
-
-    cv::Mat cameraMatrix = cv::Mat_<double>(3, 3);
-//    FileStorage paramFs("../config/calib_bak1.yaml", FileStorage::READ);
-    cv::FileStorage paramFs("../config/calib_bak1.yaml", cv::FileStorage::READ);
-    paramFs["K"] >> cameraMatrix;
-    // 内参数据
-    double camera_fx = cameraMatrix.at<double>(0, 0);
-    double camera_fy = cameraMatrix.at<double>(1, 1);
-    double camera_cx = cameraMatrix.at<double>(0, 2);
-    double camera_cy = cameraMatrix.at<double>(1, 2);
-
-    std::cout << "camera_fx: " << camera_fx << std::endl;
-    std::cout << "camera_fy: " << camera_fy << std::endl;
-    std::cout << "camera_cx: " << camera_cx << std::endl;
-    std::cout << "camera_cy: " << camera_cy << std::endl;
-
-    while (true) {
-        cam.updateFrame();
-        auto color = cam.getColorMat();
-        auto depth = cam.getDepthMat();
-        imshow("color", color);
-        imshow("depth", depth);
-
-        pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
-        // 遍历深度图
-        for (int v = 0; v < depth.rows; v++)
-            for (int u = 0; u < depth.cols; u++) {
-                // 获取深度图中(m,n)处的值
-                ushort d = depth.ptr<ushort>(v)[u];
-                // d 可能没有值，若如此，跳过此点
-                if (isnan(d) && abs(d) < 0.0001)
-                    continue;
-                // d 存在值，则向点云增加一个点
-                pcl::PointXYZRGB p;
-
-                // 计算这个点的空间坐标
-                p.z = double(d) / 1000; //单位是米
-                p.x = (u - camera_cx) * p.z / camera_fx;
-                p.y = (v - camera_cy) * p.z / camera_fy;
-
-                // 从rgb图像中获取它的颜色
-                // rgb是三通道的BGR格式图，所以按下面的顺序获取颜色
-                cv::Vec3b bgr = color.at<cv::Vec3b>(v, u);
-                p.b = bgr[0];
-                p.g = bgr[1];
-                p.r = bgr[2];
-
-                // 把p加入到点云中
-                cloud->points.push_back(p);
-                //cout << cloud->points.size() << endl;
-            }
-        cloud->height = 1;
-        cloud->width = cloud->points.size();
-        cout << "point cloud size = " << cloud->points.size() << endl;
-        cloud->is_dense = false;
-        viewer->removePointCloud("cloud");
-        viewer->addPointCloud<pcl::PointXYZRGB>(cloud, "cloud");
-        viewer->spinOnce();
-
-        int k = cv::waitKey(30);
-        if (k == 27) {
-            break;
-        }
-    }
-}
+//#include <opencv2/opencv.hpp>
+//#include "src/AstraCamera.hpp"
+//#include<pcl/io/pcd_io.h>
+//#include<pcl/io/ply_io.h>
+//#include<pcl/point_types.h>
+//#include<pcl/visualization/pcl_visualizer.h>
+//#include <opencv2/core/core.hpp>
+//#include <opencv2/highgui/highgui.hpp>
+////#include <pcl/point_types.h>
+////#include <pcl/io/pcd_io.h>
+//
+//int main() {
+//    AstraCamera cam;
+//    cam.start(SteamMode::ALL);
+//
+//    // point cloud visual
+//    boost::shared_ptr<pcl::visualization::PCLVisualizer> viewer(new pcl::visualization::PCLVisualizer("3D Viewer"));
+//
+//    cv::Mat cameraMatrix = cv::Mat_<double>(3, 3);
+////    FileStorage paramFs("../config/calib_bak1.yaml", FileStorage::READ);
+//    cv::FileStorage paramFs("../config/calib_bak1.yaml", cv::FileStorage::READ);
+//    paramFs["K"] >> cameraMatrix;
+//    // 内参数据
+//    double camera_fx = cameraMatrix.at<double>(0, 0);
+//    double camera_fy = cameraMatrix.at<double>(1, 1);
+//    double camera_cx = cameraMatrix.at<double>(0, 2);
+//    double camera_cy = cameraMatrix.at<double>(1, 2);
+//
+//    std::cout << "camera_fx: " << camera_fx << std::endl;
+//    std::cout << "camera_fy: " << camera_fy << std::endl;
+//    std::cout << "camera_cx: " << camera_cx << std::endl;
+//    std::cout << "camera_cy: " << camera_cy << std::endl;
+//
+//    while (true) {
+//        cam.updateFrame();
+//        auto color = cam.getColorMat();
+//        auto depth = cam.getDepthMat();
+//        imshow("color", color);
+//        imshow("depth", depth);
+//
+//        pcl::PointCloud<pcl::PointXYZRGB>::Ptr cloud(new pcl::PointCloud<pcl::PointXYZRGB>());
+//        // 遍历深度图
+//        for (int v = 0; v < depth.rows; v++)
+//            for (int u = 0; u < depth.cols; u++) {
+//                // 获取深度图中(m,n)处的值
+//                ushort d = depth.ptr<ushort>(v)[u];
+//                // d 可能没有值，若如此，跳过此点
+//                if (isnan(d) && abs(d) < 0.0001)
+//                    continue;
+//                // d 存在值，则向点云增加一个点
+//                pcl::PointXYZRGB p;
+//
+//                // 计算这个点的空间坐标
+//                p.z = double(d) / 1000; //单位是米
+//                p.x = (u - camera_cx) * p.z / camera_fx;
+//                p.y = (v - camera_cy) * p.z / camera_fy;
+//
+//                // 从rgb图像中获取它的颜色
+//                // rgb是三通道的BGR格式图，所以按下面的顺序获取颜色
+//                cv::Vec3b bgr = color.at<cv::Vec3b>(v, u);
+//                p.b = bgr[0];
+//                p.g = bgr[1];
+//                p.r = bgr[2];
+//
+//                // 把p加入到点云中
+//                cloud->points.push_back(p);
+//                //cout << cloud->points.size() << endl;
+//            }
+//        cloud->height = 1;
+//        cloud->width = cloud->points.size();
+//        cout << "point cloud size = " << cloud->points.size() << endl;
+//        cloud->is_dense = false;
+//        viewer->removePointCloud("cloud");
+//        viewer->addPointCloud<pcl::PointXYZRGB>(cloud, "cloud");
+//        viewer->spinOnce();
+//
+//        int k = cv::waitKey(30);
+//        if (k == 27) {
+//            break;
+//        }
+//    }
+//}

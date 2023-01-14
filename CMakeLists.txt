@@ -3,6 +3,8 @@ project(ToolBox)
 
 set(CMAKE_CXX_STANDARD 14)
 
+SET(CMAKE_BUILD_TYPE "Release")
+
 set_property(GLOBAL PROPERTY USE_FOLDERS ON)
 
 set(CMAKE_MODULE_PATH ${CMAKE_MODULE_PATH} "${CMAKE_SOURCE_DIR}/cmake")
@@ -12,7 +14,7 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 SET(COMMON_COMPILE_FLAGS "-fopenmp -Wall -Wno-sign-compare")
 SET(CMAKE_CXX_FLAGS "${PLATFORM_COMPILE_FLAGS} ${COMMON_COMPILE_FLAGS} $ENV{CXXFLAGS}")
-SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g2 -ggdb")
+#SET(CMAKE_CXX_FLAGS_DEBUG "-O0 -g2 -ggdb")
 SET(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 IF (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
@@ -34,18 +36,9 @@ set(CMAKE_AUTORCC ON)
 find_package(Qt5Core REQUIRED)
 find_package(Qt5Gui REQUIRED)
 find_package(Qt5Widgets REQUIRED)
-find_package(OpenCV REQUIRED)
-# vtk
-#set(VTK_DIR "/usr/local/lib/cmake/vtk-8.2")
-#find_package(VTK REQUIRED)
-#include(${VTK_USE_FILE})
-
-# cuda相关-用于加速pcl
-#find_package(CUDA REQUIRED)
-#INCLUDE(FindCUDA)
-#message("cuda lib:-----" ${FindCUDA})
-#cuda_add_executable (pcl_points_gpu pcl_points_gpu.cpp gpu_draw_cloud.cu)
-
+find_package(OpenCV 3 REQUIRED)
+# eigen
+include_directories("/usr/include/eigen3/")
 
 # 导入astra相机驱动
 find_package(Astra REQUIRED)
@@ -82,18 +75,18 @@ set(SOURCE src/main_window.cpp src/main_window.h src/main_window.ui src/encoder.
 set(RESOURCES resources.qrc)
 set(LIND2DUP src/line2Dup.cpp src/face_detect.cpp src/face_detect.h src/face_detect.ui)
 set(YAMLCPP ${PROJECT_SOURCE_DIR}/3rdParty/lib/yaml-cpp/libyaml-cpp.a)
-set(ARCSOFT_FACE "${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face.so" "${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face_engine.so")
+set(ARCSOFT_FACE ${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face.so ${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face_engine.so)
 
 add_executable(ToolBox main.cpp ${SOURCE} ${RESOURCES} ${LIND2DUP})  # 主程序
-#add_executable(test_camera_calib test/test_camera_calib.cpp)
-#add_executable(test_capture_images test/test_capture_images.cpp)
-#add_executable(test_pcl test/test_pcl.cpp)
-#add_executable(testAstraCam test/testAstraCam.cpp)
+add_executable(test_camera_calib test/test_camera_calib.cpp)
+add_executable(test_capture_images test/test_capture_images.cpp)
+add_executable(test_pcl test/test_pcl.cpp)
+add_executable(testAstraCam test/testAstraCam.cpp)
 
 target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${PCL_LIBRARIES})
-#target_link_libraries(test_camera_calib ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
-#target_link_libraries(test_capture_images ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
-#target_link_libraries(test_pcl  ${PCL_LIBRARIES} ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
-#target_link_libraries(testAstraCam  ${ASTRA_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
+target_link_libraries(test_camera_calib ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
+target_link_libraries(test_capture_images ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
+target_link_libraries(test_pcl  ${PCL_LIBRARIES} ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
+target_link_libraries(testAstraCam  ${ASTRA_LIBRARIES} ${OpenCV_LIBS} ${PCL_LIBRARIES})
 
 install(TARGETS ToolBox RUNTIME DESTINATION bin)

@@ -15,7 +15,8 @@
 #include<pcl/point_types.h>
 #include<pcl/visualization/pcl_visualizer.h>
 #include <pcl/common/transforms.h>
-#include <Eigen/Eigen>
+//#include <Eigen/Eigen>
+#include<Eigen/StdVector>
 #include "utils.h"
 #include "AstraCamera.hpp"
 #include <QTimer>

@@ -44,9 +44,21 @@ public:
 
         //*** depth
         astra_reader_get_depthstream(reader, &depthStream);
-        char serialnumber[128];
-        astra_depthstream_get_serialnumber(depthStream, serialnumber, 128);
+        astra_depthstream_set_registration(depthStream, true);
+//        bool ok;
+//        astra_depthstream_get_registration(depthStream, &ok);
+//        std::cout << "astra_depthstream_get_registration: " << ok << std::endl;
 
+        char serialnumber[256];
+        astra_depthstream_get_serialnumber(depthStream, serialnumber, 256);
+    }
+
+    void registration(bool f) {
+        astra_depthstream_set_registration(depthStream, f);
+        bool ok;
+        astra_depthstream_get_registration(depthStream, &ok);
+//        astra_depthstream_set_d2c_resolution(depthStream,)
+        std::cout << "astra_depthstream_get_registration: " << ok << std::endl;
     }
 
     ~AstraCamera() {
@@ -182,15 +194,11 @@ public:
     }
 
     inline cv::Mat getColorMat() {
-        if (!cMat.empty()) {
-            return cMat;
-        }
+        return cMat;
     }
 
     inline cv::Mat getDepthMat() {
-        if (!dMat.empty()) {
-            return dMat;
-        }
+        return dMat;
     }
 
 };
