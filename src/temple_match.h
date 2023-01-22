@@ -17,13 +17,12 @@
 #include <yaml-cpp/node/parse.h>
 
 
-
 using namespace std;
 //namespace fs = std::experimental::filesystem;
 
-
-const string path{"../datas/templates/"};
-const string cfg_path{"../config/cfg.yaml"};
+const string path = get_abs_path("../datas/templates/");
+const string cfg_path = get_abs_path("../config/cfg.yaml");
+//const string cfg_path{"../config/cfg.yaml"};
 
 
 QT_BEGIN_NAMESPACE
@@ -59,6 +58,7 @@ private:
 //    TRAIN_RESULT trainResult;
 
 private slots:
+
     bool eventFilter(QObject *watched, QEvent *event);
 };
 

@@ -30,7 +30,8 @@ encoder::~encoder() {
 }
 
 void encoder::clickBtn1() {
-    string file_path = QFileDialog::getOpenFileName(this, "选择要加密的文件", "../datas/other",
+    auto path = get_abs_path("../datas/other");
+    string file_path = QFileDialog::getOpenFileName(this, "选择要加密的文件", path.data(),
                                                     ";;").toStdString();
     if (file_path.empty()) {
         cout << "no choose" << endl;
@@ -73,7 +74,8 @@ void encoder::clickBtn2() {
 }
 
 void encoder::clickBtn3() {
-    string file_path = QFileDialog::getOpenFileName(this, "选择要解密的文件", "../datas/other",
+    auto path = get_abs_path("../datas/other");
+    string file_path = QFileDialog::getOpenFileName(this, "选择要解密的文件", path.data(),
                                                     "(*.enc);;").toStdString();
     if (file_path.empty()) {
         cout << "no choose" << endl;
@@ -116,7 +118,8 @@ void encoder::UpdateProgress() {
 
 
 void encoder::clickBtn5() {
-    string file_path = QFileDialog::getOpenFileName(this, "选择秘钥文件", "../datas/other",
+    auto path = get_abs_path("../datas/other");
+    string file_path = QFileDialog::getOpenFileName(this, "选择秘钥文件", path.data(),
                                                     "(*.key);;").toStdString();
     if (file_path.empty()) {
         cout << "no choose" << endl;

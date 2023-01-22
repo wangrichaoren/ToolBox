@@ -23,6 +23,10 @@ start_window::start_window(QWidget *parent) :
     QDesktopWidget *desktop = QApplication::desktop();
     move((desktop->width() - this->width()) / 2, (desktop->height() - this->height()) / 2);
 
+    // 图标
+    auto p = get_abs_path("../icons/image0.jpg");
+    this->setWindowIcon(QIcon(p.data()));
+
     ui->file_encryption_btn->setToolTip("用于文件加密/解密的小工具，加解密算法采用AES");
     ui->match_btn->setToolTip("基于形状边缘特征匹配的小工具,shape base matching");
     ui->cam_calib_btn->setToolTip("用于标定相机内参小工具");

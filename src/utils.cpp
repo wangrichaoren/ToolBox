@@ -77,3 +77,17 @@ vector<float> splitStringToFloat(string s) {
     }
     return res;
 };
+
+string get_abs_path(string path) {
+#ifdef _WIN32
+#define max_path 4096
+    char resolved_path[max_path]={0};
+   _fullpath(resolved_path,path.c_str(),max_path);
+#else
+    //linux release有个坑，需要大点的空间
+#define max_path 40960
+    char resolved_path[max_path] = {0};
+    realpath(path.c_str(), resolved_path);
+#endif
+    return string(resolved_path);
+}

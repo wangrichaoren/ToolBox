@@ -46,8 +46,8 @@ calib::calib(QWidget *parent) :
     connect(ui->pushButton_2, &QPushButton::clicked, [=] {
         cout << "标定计算..." << endl;
         cv::calibrateCamera(objpoints, imgpoints, size1, cameraMatrix, distCoeffs, r, t);
-
-        cv::FileStorage fs("../config/calib_bak1.yaml", cv::FileStorage::WRITE);
+        auto p = get_abs_path("../config/calib_bak1.yaml");
+        cv::FileStorage fs(p.data(), cv::FileStorage::WRITE);
         fs << "ImageWidth" << size1.width;
         fs << "ImageHeight" << size1.height;
         fs << "CameraMatrix" << cameraMatrix << "DistCoeffs" << distCoeffs;

@@ -67,4 +67,7 @@ vector<float> splitStringToFloat(string s);
 
 vector<int> splitStringToInt(string s);
 
+string get_abs_path(string path);
+
+
 #endif //TOOLBOX_UTILS_H

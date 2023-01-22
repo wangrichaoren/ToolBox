@@ -20,7 +20,8 @@ pcl_visual::pcl_visual(QWidget *parent) :
     // 加载相机内参
     cv::Mat camM = cv::Mat_<double>(3, 3);
     cv::Mat discM = cv::Mat_<double>(1, 5);
-    cv::FileStorage paramFs("../config/calib.yaml", cv::FileStorage::READ);
+    auto p = get_abs_path("../config/calib.yaml");
+    cv::FileStorage paramFs(p, cv::FileStorage::READ);
     paramFs["K"] >> camM;
     paramFs["D"] >> discM;
     camera_fx = paramFs["fx"];
@@ -122,7 +123,7 @@ pcl_visual::pcl_visual(QWidget *parent) :
                 break;
             }
         }
-        std::string savePath = "../datas/point_clouds/" + fileName + ".pcd";
+        std::string savePath = get_abs_path("../datas/point_clouds/" + fileName + ".pcd");
         pcl::io::savePCDFile(savePath, *cloud, true);
     });
 
@@ -184,7 +185,8 @@ void pcl_visual::onFormatConversion() {
 
 void pcl_visual::onOpen() {
     qDebug("点击了打开.");
-    std::string fileName = QFileDialog::getOpenFileName(this, "Open PointCloud", "../datas/point_clouds",
+    auto p = get_abs_path("../datas/point_clouds");
+    std::string fileName = QFileDialog::getOpenFileName(this, "Open PointCloud", p.data(),
                                                         "Open PCD/PLY files(*.pcd *.ply)").toStdString();
     if (fileName.empty()) {
         std::cout << "未选择点云文件." << std::endl;
