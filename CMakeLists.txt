@@ -13,8 +13,6 @@ set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -pthread -lpthread -Wl,--no-as-needed  -
 set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -fPIC")
 
 SET(COMMON_COMPILE_FLAGS "-fopenmp -Wall -Wno-sign-compare")
-SET(CMAKE_CXX_FLAGS "${PLATFORM_COMPILE_FLAGS} ${COMMON_COMPILE_FLAGS} $ENV{CXXFLAGS}")
-SET(CMAKE_CXX_FLAGS_RELEASE "-O3")
 
 IF (${CMAKE_SYSTEM_PROCESSOR} MATCHES "arm")
     SET(PLATFORM_COMPILE_FLAGS "-mfpu=neon")
@@ -24,6 +22,8 @@ ENDIF ()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_RUNTIME_OUTPUT_DIRECTORY ${CMAKE_CURRENT_SOURCE_DIR}/bin)
+
+SET(CMAKE_CXX_FLAGS_RELEASE "${PLATFORM_COMPILE_FLAGS} ${COMMON_COMPILE_FLAGS} $ENV{CXXFLAGS}")
 
 # qt相关
 set(CMAKE_AUTOMOC ON)
@@ -67,14 +67,15 @@ link_directories(${PROJECT_SOURCE_DIR}/3rdParty/lib)
 # include MIPP headers
 include_directories(${INCLUDE_DIRECTORIES} "3rdParty/include/MIPP/")
 
-set(SOURCE src/encoder.cpp src/encoder.h src/encoder.ui src/utils.h src/utils.cpp src/DES.h src/DES.cpp
-           src/myencoder.cpp src/myencoder.h src/temple_match.cpp src/temple_match.h src/temple_match.ui
-           src/imagewidget.cpp src/imagewidget.h src/face_detect.cpp src/face_detect.h src/face_detect.ui
-           src/newImageWidget.cpp src/newImageWidget.h src/camera.cpp src/camera.h src/ArcFace.cpp src/ArcFace.h
-           src/AstraCamera.hpp src/calib.cpp src/calib.h src/calib.ui src/pcl_visual.cpp src/pcl_visual.h src/pcl_visual.ui
-           src/start_window.cpp src/start_window.h src/start_window.ui)
+set(SOURCE
+        src/encoder.cpp src/encoder.h src/encoder.ui src/utils.h src/utils.cpp src/DES.h src/DES.cpp
+        src/myencoder.cpp src/myencoder.h src/temple_match.cpp src/temple_match.h src/temple_match.ui
+        src/imagewidget.cpp src/imagewidget.h src/face_detect.cpp src/face_detect.h src/face_detect.ui
+        src/newImageWidget.cpp src/newImageWidget.h src/camera.cpp src/camera.h src/ArcFace.cpp src/ArcFace.h
+        src/AstraCamera.hpp src/calib.cpp src/calib.h src/calib.ui src/pcl_visual.cpp src/pcl_visual.h src/pcl_visual.ui
+        src/start_window.cpp src/start_window.h src/start_window.ui)
 set(RESOURCES resources.qrc)
-set(LIND2DUP src/line2Dup.cpp src/face_detect.cpp src/face_detect.h src/face_detect.ui)
+set(LIND2DUP src/line2Dup.cpp)
 set(YAMLCPP ${PROJECT_SOURCE_DIR}/3rdParty/lib/yaml-cpp/libyaml-cpp.a)
 set(ARCSOFT_FACE ${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face.so ${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face_engine.so)
 

@@ -7,6 +7,7 @@
 #include "start_window.h"
 #include <QDesktopWidget>
 #include <iostream>
+#include "utils.h"
 #include "ui_start_window.h"
 #include "encoder.h"
 #include "temple_match.h"
@@ -77,6 +78,12 @@ start_window::start_window(QWidget *parent) :
         p_v->exec();
         p_v->deleteLater();
         this->setEnabled(true);
+    });
+
+    // todo 未完成
+    connect(ui->pushButton, &QPushButton::clicked, [=] {
+        showMessageBox(this, "未开发的功能...");
+        return;
     });
 
     // 退出
