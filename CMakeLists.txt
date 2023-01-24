@@ -72,19 +72,23 @@ set(SOURCE
         src/imagewidget.cpp src/imagewidget.h src/face_detect.cpp src/face_detect.h src/face_detect.ui
         src/newImageWidget.cpp src/newImageWidget.h src/camera.cpp src/camera.h src/ArcFace.cpp src/ArcFace.h
         src/AstraCamera.hpp src/calib.cpp src/calib.h src/calib.ui src/pcl_visual.cpp src/pcl_visual.h src/pcl_visual.ui
-        src/start_window.cpp src/start_window.h src/start_window.ui)
+        src/start_window.cpp src/start_window.h src/start_window.ui src/local_camera.cpp src/local_camera.h src/base_camera.h
+        )
+
 set(RESOURCES resources.qrc)
 set(LIND2DUP src/line2Dup.cpp)
 set(YAMLCPP ${PROJECT_SOURCE_DIR}/3rdParty/lib/yaml-cpp/libyaml-cpp.a)
 set(ARCSOFT_FACE ${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face.so ${PROJECT_SOURCE_DIR}/3rdParty/lib/arcsoft_face/libarcsoft_face_engine.so)
 
 add_executable(ToolBox main.cpp ${SOURCE} ${RESOURCES} ${LIND2DUP})  # 主程序
+#add_executable(test_local_cam test/test_local_cam.cpp src/local_camera.cpp src/local_camera.h src/base_camera.h)
 #add_executable(test_camera_calib test/test_camera_calib.cpp)
 #add_executable(test_capture_images test/test_capture_images.cpp)
 #add_executable(test_pcl test/test_pcl.cpp)
 #add_executable(testAstraCam test/testAstraCam.cpp)
 
 target_link_libraries(ToolBox ${QT_LIBRARIES} ${OpenCV_LIBS} ${YAMLCPP} ${ARCSOFT_FACE} ${ASTRA_LIBRARIES} ${PCL_LIBRARIES})
+#target_link_libraries(test_local_cam ${OpenCV_LIBS})
 #target_link_libraries(test_camera_calib ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
 #target_link_libraries(test_capture_images ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
 #target_link_libraries(test_pcl  ${PCL_LIBRARIES} ${OpenCV_LIBS} ${ASTRA_LIBRARIES})
