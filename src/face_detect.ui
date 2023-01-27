@@ -6,85 +6,272 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>994</width>
-    <height>887</height>
+    <width>1060</width>
+    <height>897</height>
    </rect>
   </property>
   <property name="windowTitle">
    <string>人脸识别</string>
   </property>
   <layout class="QGridLayout" name="gridLayout">
-   <item row="0" column="0" colspan="3">
-    <widget class="QGraphicsView" name="graphicsView">
+   <item row="2" column="0">
+    <widget class="Line" name="line">
+     <property name="styleSheet">
+      <string notr="true">color: rgb(239, 41, 41);
+background-color: rgb(239, 41, 41);</string>
+     </property>
+     <property name="orientation">
+      <enum>Qt::Horizontal</enum>
+     </property>
+    </widget>
+   </item>
+   <item row="1" column="0">
+    <widget class="QGraphicsView" name="main_graphicsView">
+     <property name="styleSheet">
+      <string notr="true"/>
+     </property>
+    </widget>
+   </item>
+   <item row="3" column="0">
+    <widget class="QGroupBox" name="groupBox">
      <property name="sizePolicy">
-      <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+      <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
        <horstretch>0</horstretch>
        <verstretch>0</verstretch>
       </sizepolicy>
      </property>
      <property name="minimumSize">
       <size>
-       <width>976</width>
-       <height>612</height>
+       <width>0</width>
+       <height>200</height>
       </size>
      </property>
-     <property name="maximumSize">
-      <size>
-       <width>976</width>
-       <height>612</height>
-      </size>
+     <property name="styleSheet">
+      <string notr="true"/>
      </property>
-    </widget>
-   </item>
-   <item row="1" column="0" rowspan="3">
-    <widget class="QGroupBox" name="groupBox">
      <property name="title">
-      <string>选项</string>
+      <string/>
      </property>
      <layout class="QGridLayout" name="gridLayout_2">
-      <item row="0" column="0">
-       <widget class="QRadioButton" name="radioButton">
+      <item row="0" column="1">
+       <widget class="QPushButton" name="offline_det_btn">
         <property name="text">
-         <string>本地相机</string>
+         <string>离线检测</string>
         </property>
        </widget>
       </item>
-      <item row="0" column="1">
-       <widget class="QRadioButton" name="radioButton_2">
+      <item row="1" column="1">
+       <widget class="QPushButton" name="online_det_btn">
         <property name="text">
-         <string>外部&amp;USB相机</string>
+         <string>在线检测(OFF)</string>
         </property>
+       </widget>
+      </item>
+      <item row="2" column="1">
+       <widget class="QPushButton" name="offline_reg_btn">
+        <property name="text">
+         <string>离线注册</string>
+        </property>
+       </widget>
+      </item>
+      <item row="3" column="1">
+       <widget class="QPushButton" name="online_reg_btn">
+        <property name="text">
+         <string>在线注册</string>
+        </property>
+       </widget>
+      </item>
+      <item row="0" column="0" rowspan="4">
+       <widget class="QTabWidget" name="tabWidget">
+        <property name="sizePolicy">
+         <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+          <horstretch>0</horstretch>
+          <verstretch>0</verstretch>
+         </sizepolicy>
+        </property>
+        <property name="tabShape">
+         <enum>QTabWidget::Triangular</enum>
+        </property>
+        <property name="currentIndex">
+         <number>0</number>
+        </property>
+        <widget class="QWidget" name="tab">
+         <attribute name="title">
+          <string>相机</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_3">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="local_radioButton">
+            <property name="text">
+             <string>本地相机</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="astra_radioButton">
+            <property name="text">
+             <string>乐视三合一相机</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="radioButton">
+            <property name="enabled">
+             <bool>false</bool>
+            </property>
+            <property name="text">
+             <string>其他</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_2">
+         <attribute name="title">
+          <string>功能选项</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_4">
+          <item row="0" column="0">
+           <widget class="QRadioButton" name="offline_radioButton">
+            <property name="text">
+             <string>离线识别</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="1">
+           <widget class="QRadioButton" name="live_radioButton">
+            <property name="text">
+             <string>活体识别</string>
+            </property>
+           </widget>
+          </item>
+          <item row="0" column="2">
+           <widget class="QRadioButton" name="feature_radioButton">
+            <property name="text">
+             <string>特征识别</string>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+        <widget class="QWidget" name="tab_3">
+         <attribute name="title">
+          <string>注册查询</string>
+         </attribute>
+         <layout class="QGridLayout" name="gridLayout_5">
+          <item row="1" column="2">
+           <widget class="QPushButton" name="admin_btn">
+            <property name="text">
+             <string>管理员登录</string>
+            </property>
+           </widget>
+          </item>
+          <item row="1" column="3">
+           <spacer name="horizontalSpacer_3">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="0">
+           <spacer name="horizontalSpacer">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="4">
+           <spacer name="horizontalSpacer_2">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="1" column="1">
+           <spacer name="horizontalSpacer_4">
+            <property name="orientation">
+             <enum>Qt::Horizontal</enum>
+            </property>
+            <property name="sizeHint" stdset="0">
+             <size>
+              <width>40</width>
+              <height>20</height>
+             </size>
+            </property>
+           </spacer>
+          </item>
+          <item row="0" column="1" colspan="3">
+           <widget class="QLineEdit" name="lineEdit">
+            <property name="text">
+             <string/>
+            </property>
+            <property name="echoMode">
+             <enum>QLineEdit::Password</enum>
+            </property>
+           </widget>
+          </item>
+         </layout>
+        </widget>
+       </widget>
+      </item>
+      <item row="0" column="2" rowspan="4">
+       <widget class="QGroupBox" name="groupBox_2">
+        <property name="enabled">
+         <bool>false</bool>
+        </property>
+        <property name="title">
+         <string>特征库</string>
+        </property>
+        <layout class="QGridLayout" name="gridLayout_6">
+         <item row="1" column="0">
+          <widget class="QLabel" name="label">
+           <property name="text">
+            <string>特征数量:</string>
+           </property>
+          </widget>
+         </item>
+         <item row="1" column="1">
+          <widget class="QLabel" name="num_label">
+           <property name="font">
+            <font>
+             <pointsize>50</pointsize>
+             <weight>75</weight>
+             <bold>true</bold>
+            </font>
+           </property>
+           <property name="text">
+            <string/>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item row="0" column="0" colspan="2">
+          <widget class="QComboBox" name="comboBox"/>
+         </item>
+        </layout>
        </widget>
       </item>
      </layout>
-    </widget>
-   </item>
-   <item row="1" column="1">
-    <widget class="QPushButton" name="pushButtonOpenCam">
-     <property name="text">
-      <string>打开相机</string>
-     </property>
-    </widget>
-   </item>
-   <item row="1" column="2" rowspan="3">
-    <widget class="QGroupBox" name="groupBox_2">
-     <property name="title">
-      <string>信息</string>
-     </property>
-    </widget>
-   </item>
-   <item row="2" column="1">
-    <widget class="QPushButton" name="pushButtonDet">
-     <property name="text">
-      <string>开启人脸检测</string>
-     </property>
-    </widget>
-   </item>
-   <item row="3" column="1">
-    <widget class="QPushButton" name="pushButtonCloseCam">
-     <property name="text">
-      <string>关闭相机</string>
-     </property>
     </widget>
    </item>
   </layout>

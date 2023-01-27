@@ -5,7 +5,7 @@
 #include "local_camera.h"
 
 local_camera::local_camera() {
-    capture = cv::VideoCapture(0);
+    capture = cv::VideoCapture(-1);
 }
 
 bool local_camera::checkOpen() {

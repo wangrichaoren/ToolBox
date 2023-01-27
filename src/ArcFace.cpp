@@ -86,7 +86,9 @@ ArcFace::ArcFace() {
     handle = NULL;
 //    MInt32 mask = ASF_FACE_DETECT | ASF_FACERECOGNITION | ASF_AGE | ASF_GENDER | ASF_FACE3DANGLE | ASF_LIVENESS |
 //                  ASF_IR_LIVENESS;
-    MInt32 mask = ASF_FACE_DETECT | ASF_FACERECOGNITION | ASF_AGE | ASF_GENDER | ASF_FACE3DANGLE;
+//    MInt32 mask = ASF_FACE_DETECT | ASF_FACERECOGNITION | ASF_AGE | ASF_GENDER | ASF_FACE3DANGLE;
+    // 目标检测/识别/性别/年龄
+    MInt32 mask = ASF_FACE_DETECT | ASF_FACERECOGNITION | ASF_GENDER | ASF_AGE;
     res = ASFInitEngine(ASF_DETECT_MODE_VIDEO, ASF_OP_0_ONLY, NSCALE, FACENUM, mask, &handle);
     if (res != MOK)
         printf("ASF检测引擎初始化失败: %d\n", res);
@@ -99,7 +101,7 @@ ArcFace::~ArcFace() {
 
 }
 
-cv::Mat ArcFace::detect(cv::Mat &frame) {
+cv::Mat ArcFace::detect(cv::Mat &frame, bool online) {
     auto originalImg = cvIplImage(frame);
     IplImage *img = cvCreateImage(cvSize(originalImg.width - originalImg.width %
                                                              4, originalImg.height), IPL_DEPTH_8U,
@@ -120,7 +122,7 @@ cv::Mat ArcFace::detect(cv::Mat &frame) {
     ASF_MultiFaceInfo detectedFaces = {0};
 
     // 其他检测信息-年龄/性别/rpy
-    MInt32 processMask = ASF_AGE | ASF_GENDER | ASF_FACE3DANGLE;
+    MInt32 processMask = ASF_GENDER | ASF_AGE;
 
     if (img) {
         MRESULT res = ASFDetectFacesEx(handle, &offscreen, &detectedFaces);
@@ -136,43 +138,63 @@ cv::Mat ArcFace::detect(cv::Mat &frame) {
             for (int i = 0; i < detectedFaces.faceNum; i++) {
                 // 人脸信息
                 // 年龄
+
                 ASF_AgeInfo ageInfo = {0};
                 res = ASFGetAge(handle, &ageInfo);
+                int age = 0;
                 if (res == MOK) {
                     printf("年龄:%d\n", ageInfo.ageArray[i]);
+                    age = ageInfo.ageArray[i];
                 }
                 // 性别
                 ASF_GenderInfo genderInfo = {0};
                 res = ASFGetGender(handle, &genderInfo);
-                if (res == MOK)
-                    printf("性别: %d\n", genderInfo.genderArray[i]);
-                //3d角度
-                ASF_Face3DAngle angleInfo = {0};
-                res = ASFGetFace3DAngle(handle, &angleInfo);
+                cv::Scalar c;
                 if (res == MOK) {
-                    printf("3d角度: roll: %lf yaw: %lf pitch: %lf\n", angleInfo.roll[i], angleInfo.yaw[i],
-                           angleInfo.pitch[i]);
-
+                    if (genderInfo.genderArray[i] == 0) {
+                        c = cv::Scalar(255, 0, 0);
+                    } else if (genderInfo.genderArray[i] == 1) {
+                        c = cv::Scalar(0, 0, 255);
+                    } else {
+                        c = cv::Scalar(150, 150, 150);
+                    }
+                } else {
+                    c = cv::Scalar(150, 150, 150);
                 }
 
-                printf("Face Id: %d\n", detectedFaces.faceID[i]);
-                printf("Face Orient: %d\n", detectedFaces.faceOrient[i]);
-
+                //3d角度
+//                ASF_Face3DAngle angleInfo = {0};
+//                res = ASFGetFace3DAngle(handle, &angleInfo);
+//                if (res == MOK) {
+//                    printf("3d角度: roll: %lf yaw: %lf pitch: %lf\n", angleInfo.roll[i], angleInfo.yaw[i],
+//                           angleInfo.pitch[i]);
+//
+//                }
+//                printf("Face Id: %d\n", detectedFaces.faceID[i]);
+//                printf("Face Orient: %d\n", detectedFaces.faceOrient[i]);
                 // 绘制到frame:Mat上
                 rectangle(frame, cv::Point(detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top),
                           cv::Point(detectedFaces.faceRect[i].right, detectedFaces.faceRect[i].bottom),
-                          cv::Scalar(255, 0, 0), 1, cv::LINE_4);
+                          c, 2);
 
-                cv::circle(frame,
-                           cv::Point(detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top),
-                           3,
-                           cv::Scalar(0, 255, 0), -1, cv::LINE_4);
+                int theta=10;
+                if (!online) {
+                    rectangle(frame, cv::Point(detectedFaces.faceRect[i].left + theta, detectedFaces.faceRect[i].top + theta),
+                              cv::Point(detectedFaces.faceRect[i].right - theta, detectedFaces.faceRect[i].bottom - theta),
+                              cv::Scalar(150, 150, 150), 1);
+                } else {
+                    rectangle(frame, cv::Point(detectedFaces.faceRect[i].left + theta, detectedFaces.faceRect[i].top + theta),
+                              cv::Point(detectedFaces.faceRect[i].right - theta, detectedFaces.faceRect[i].bottom - theta),
+                              cv::Scalar(0, 255, 0), 1);
+                }
 
-                cv::circle(frame,
-                           cv::Point(detectedFaces.faceRect[i].right, detectedFaces.faceRect[i].bottom),
-                           3,
-                           cv::Scalar(0, 0, 255), -1, cv::LINE_4);
-
+                auto dis = (detectedFaces.faceRect[i].right - detectedFaces.faceRect[i].left) / 10;
+                for (int j = 1; j < int(age / 10) + 1; ++j) {
+                    cv::line(frame, cv::Point(dis * j + detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top),
+                             cv::Point(dis * j + detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top - 5 * j),
+                             c,
+                             2);
+                }
 
             }
         }
@@ -181,6 +203,10 @@ cv::Mat ArcFace::detect(cv::Mat &frame) {
     }
 
     return frame;
+}
+
+void ArcFace::register_features() {
+
 }
 
 

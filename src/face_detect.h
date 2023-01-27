@@ -12,16 +12,39 @@
 #include "arcsoft_face/merror.h"
 #include "imagewidget.h"
 #include <QtConcurrent/QtConcurrent>
-#include "camera.h"
+#include "base_camera.h"
 #include "utils.h"
 #include <QGraphicsScene>
 #include <QButtonGroup>
 #include "ArcFace.h"
+#include "local_camera.h"
 
 
 QT_BEGIN_NAMESPACE
 namespace Ui { class face_detect; }
 QT_END_NAMESPACE
+
+class graphics_view : public QObject {
+Q_OBJECT
+private:
+    BaseCamera *cam = nullptr;
+public:
+    explicit graphics_view(QObject *parent = nullptr);
+
+    ~graphics_view();
+
+    void set_cam(BaseCamera *cam);
+
+public slots:
+
+    void time_out_slot();
+
+signals:
+
+    void get_frame(cv::Mat frame);
+
+
+};
 
 class face_detect : public QDialog {
 Q_OBJECT
@@ -31,17 +54,24 @@ public:
 
     void closeEvent(QCloseEvent *e);
 
+    void init_database();
+
     ~face_detect() override;
 
 
 private:
     inline void showImage(cv::Mat &frame);
+
     Ui::face_detect *ui;
-    bool is_open_cam;
-    bool is_open_det;
     QGraphicsScene *scene;
-    camera *cam;
     ArcFace *face;
+    QTimer *m_timer;
+    BaseCamera *cam;
+    QThread *m_thread;
+    graphics_view *m_view;
+
+    bool is_online = false;
+
 };
 
 

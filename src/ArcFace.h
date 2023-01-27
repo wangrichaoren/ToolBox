@@ -36,7 +36,14 @@ public:
 
     ~ArcFace();
 
-    cv::Mat detect(cv::Mat &frame);
+    // 人脸识别
+    cv::Mat detect(cv::Mat &frame, bool online = false);
+
+    // 人脸注册
+    void register_features();
+
+    //
+
 
 private:
     void timestampToTime(char *timeStamp, char *dateTime, int dateTimeSize);

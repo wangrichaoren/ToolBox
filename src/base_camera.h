@@ -22,9 +22,8 @@ public:
 
     virtual cv::Mat getColorMat() = 0;
 
-
+    virtual ~BaseCamera() = default;
 };
-
 
 
 #endif //TOOLBOX_BASE_CAMERA_H
