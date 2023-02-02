@@ -18,6 +18,7 @@
 #include <QButtonGroup>
 #include "ArcFace.h"
 #include "local_camera.h"
+#include "AstraCamera.hpp"
 
 
 QT_BEGIN_NAMESPACE
@@ -43,7 +44,7 @@ signals:
 
     void get_frame(cv::Mat frame);
 
-
+    void link_error();
 };
 
 class face_detect : public QDialog {
@@ -57,6 +58,8 @@ public:
     void init_database();
 
     ~face_detect() override;
+
+    void choose_cam_radio_btn_enable(bool f);
 
 
 private:

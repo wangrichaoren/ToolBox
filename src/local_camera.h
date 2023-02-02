@@ -19,6 +19,8 @@ public:
 
     void pause(bool f) override;
 
+    void start(SteamMode m) override;
+
     bool checkOpen() override;
 
     inline void updateFrame() override;
@@ -31,6 +33,7 @@ private:
     cv::Mat mat;
     std::mutex l1;
     std::mutex l2;
+    bool is_start = false;
 };
 
 

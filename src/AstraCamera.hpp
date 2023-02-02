@@ -3,17 +3,12 @@
 #include <opencv2/opencv.hpp>
 #include "astra/astra_core/capi/astra_core.h"
 #include <unistd.h>
+#include "base_camera.h"
 
 #ifndef _ASTRA_CAMERA_
 #define _ASTRA_CAMERA_
 
-enum SteamMode {
-    RGB,
-    DEPTH,
-    ALL
-};
-
-class AstraCamera {
+class AstraCamera : public BaseCamera {
 private:
     astra_reader_t reader;
     astra_streamsetconnection_t sensor;
@@ -61,14 +56,21 @@ public:
         std::cout << "astra_depthstream_get_registration: " << ok << std::endl;
     }
 
-    ~AstraCamera() {
-        astra_reader_destroy(&reader);
-        astra_streamset_close(&sensor);
-        astra_terminate();
+    ~AstraCamera() override {
+        this->close();
+//        astra_reader_destroy(&reader);
+//        astra_streamset_close(&sensor);
+//        astra_terminate();
         std::cout << "关闭ASTRA CAMERA!" << std::endl;
     }
 
-    inline void start(SteamMode e) {
+    void close() override {
+        astra_reader_destroy(&reader);
+        astra_streamset_close(&sensor);
+        astra_terminate();
+    }
+
+    void start(SteamMode e) override {
         if (e == ALL) {
             astra_stream_start(colorStream);
             astra_stream_start(depthStream);
@@ -83,26 +85,33 @@ public:
         }
     }
 
-    inline void stop() {
+    void stop() {
         astra_stream_stop(colorStream);
         astra_stream_stop(depthStream);
         isRGB = false;
         isDepth = false;
     }
 
-    void pause(bool f) {
+    void pause(bool f) override {
         isPause = f;
 //        isPause = !isPause;
     }
 
-    bool checkIsOpen() {
-        if ((isRGB + isDepth) == 0) {
-            return false;
-        }
-        return true;
+    bool checkOpen() override {
+        bool is_alive = false;
+        astra_streamset_is_available(sensor, &is_alive);
+        std::cout << "astra alive: " << is_alive << std::endl;
+        return is_alive;
+//        if ((isRGB + isDepth) == 0) {
+//            return false;
+//        }
+//        return true;
     }
 
-    inline void updateFrame() {
+    void updateFrame() override {
+        if (!checkOpen()) {
+            throw std::runtime_error("astra link error!");
+        }
         if ((isRGB + isDepth) == 0) {
             throw std::runtime_error("相机请先start，在update frame!");
         }
@@ -193,7 +202,7 @@ public:
         }
     }
 
-    inline cv::Mat getColorMat() {
+    cv::Mat getColorMat() override {
         return cMat;
     }
 

@@ -27,14 +27,25 @@ face_detect::face_detect(QWidget *parent) :
     m_view = new graphics_view();
     m_view->moveToThread(m_thread);
 
+    connect(m_view, &graphics_view::link_error, [=] {
+        scene->clear();
+        cam->close();
+        m_timer->stop();
+        m_thread->quit();
+        m_thread->wait();
+        choose_cam_radio_btn_enable(true);
+        showMessageBox(this, "相机断开连接!");
+        return;
+    });
+
     // 定时器的信号与槽
     connect(m_timer, &QTimer::timeout, m_view, &graphics_view::time_out_slot, Qt::DirectConnection);
 
     connect(m_view, &graphics_view::get_frame, [=](cv::Mat m) {
-        cv::Mat dst;
+
         if (ui->offline_radioButton->isChecked()) {
             // 离线
-            dst = face->detect(m);
+            m = face->detect(m);
         } else if (ui->live_radioButton->isChecked()) {
             // 活体
             std::cout << "活体未开发..." << std::endl;
@@ -42,7 +53,7 @@ face_detect::face_detect(QWidget *parent) :
             // 特征
             std::cout << "特征" << std::endl;
         }
-        showImage(dst);
+        showImage(m);
     });
 
 
@@ -59,10 +70,9 @@ face_detect::face_detect(QWidget *parent) :
             } else if (ui->astra_radioButton->isChecked()) {
                 std::cout << "打开乐视三合一相机" << std::endl;
                 cam_name = "乐视三合一相机";
-                // todo 乐视三合一没实现...
-
+                cam = new AstraCamera();
             } else {
-                throw runtime_error("runtime_error");
+                throw runtime_error("未定义的相机型号...");
             }
 
             if (!cam->checkOpen()) {
@@ -72,10 +82,12 @@ face_detect::face_detect(QWidget *parent) :
                 return;
             }
 
+            cam->start(SteamMode::RGB);
             m_view->set_cam(cam);
-            m_timer->start();
             m_thread->start();
+            m_timer->start();
             ui->online_det_btn->setText("在线检测(ON)");
+            choose_cam_radio_btn_enable(false);
         } else {
             std::cout << "关闭在线检测" << std::endl;
             cam->close();
@@ -84,6 +96,7 @@ face_detect::face_detect(QWidget *parent) :
             m_thread->wait();
             scene->clear();
             ui->online_det_btn->setText("在线检测(OFF)");
+            choose_cam_radio_btn_enable(true);
         }
 
     });
@@ -153,14 +166,27 @@ void face_detect::init_database() {
 
 }
 
+void face_detect::choose_cam_radio_btn_enable(bool f) {
+    ui->local_radioButton->setEnabled(f);
+    ui->astra_radioButton->setEnabled(f);
+}
+
 void graphics_view::set_cam(BaseCamera *_cam) {
     this->cam = _cam;
 }
 
 void graphics_view::time_out_slot() {
+    if (!cam->checkOpen()) {
+        throw runtime_error("link error");
+//        std::cout << "send link error1" << std::endl;
+//        emit this->link_error();
+//        std::cout << "send link error2" << std::endl;
+//        return;
+    }
     this->cam->updateFrame();
     auto mat = this->cam->getColorMat();
-    emit this->get_frame(mat);
+    emit
+    this->get_frame(mat);
 }
 
 graphics_view::graphics_view(QObject *parent) : QObject(parent) {

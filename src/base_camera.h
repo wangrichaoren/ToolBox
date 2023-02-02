@@ -9,16 +9,24 @@
 
 #include <opencv2/opencv.hpp>
 
+enum SteamMode {
+    RGB,
+    DEPTH,
+    ALL
+};
+
 class BaseCamera {
 
 public:
-    virtual inline void close() = 0;
+    virtual void close() = 0;
+
+    virtual void start(SteamMode m) = 0;
 
     virtual void pause(bool f) = 0;
 
     virtual bool checkOpen() = 0;
 
-    virtual inline void updateFrame() = 0;
+    virtual void updateFrame() = 0;
 
     virtual cv::Mat getColorMat() = 0;
 

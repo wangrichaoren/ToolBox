@@ -5,7 +5,10 @@
 #include "local_camera.h"
 
 local_camera::local_camera() {
-    capture = cv::VideoCapture(-1);
+    // linux udev固定设备号/多路USB固定设备号。这里的idx为2，实际上是通过rules文件改写的，否则的话每次索引都会不相同，详细 https://blog.csdn.net/limuyuanrs/article/details/108088644
+    // todo cv::CAP_V4L2 --- 感觉有点问题
+    // 调用opencv的api创建笔记本摄像头的句柄
+    capture = cv::VideoCapture(-1, cv::CAP_V4L2);
 }
 
 bool local_camera::checkOpen() {
@@ -16,6 +19,9 @@ bool local_camera::checkOpen() {
 }
 
 void local_camera::updateFrame() {
+    if (!is_start){
+        throw std::runtime_error("cam must be first start!");
+    }
     if (!capture.isOpened()) {
         throw std::runtime_error("local camera link error!");
     }
@@ -52,4 +58,11 @@ local_camera::~local_camera() {
         this->close();
     }
     std::cout << "xxx local camera" << std::endl;
+}
+
+void local_camera::start(SteamMode m) {
+    if (m != SteamMode::RGB) {
+        throw std::runtime_error("local cam only support rgb model!");
+    }
+    is_start = true;
 }
