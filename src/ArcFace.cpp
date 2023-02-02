@@ -138,7 +138,6 @@ cv::Mat ArcFace::detect(cv::Mat &frame, bool online) {
             for (int i = 0; i < detectedFaces.faceNum; i++) {
                 // 人脸信息
                 // 年龄
-
                 ASF_AgeInfo ageInfo = {0};
                 res = ASFGetAge(handle, &ageInfo);
                 int age = 0;
@@ -177,14 +176,18 @@ cv::Mat ArcFace::detect(cv::Mat &frame, bool online) {
                           cv::Point(detectedFaces.faceRect[i].right, detectedFaces.faceRect[i].bottom),
                           c, 2);
 
-                int theta=10;
+                int theta = 10;
                 if (!online) {
-                    rectangle(frame, cv::Point(detectedFaces.faceRect[i].left + theta, detectedFaces.faceRect[i].top + theta),
-                              cv::Point(detectedFaces.faceRect[i].right - theta, detectedFaces.faceRect[i].bottom - theta),
+                    rectangle(frame,
+                              cv::Point(detectedFaces.faceRect[i].left + theta, detectedFaces.faceRect[i].top + theta),
+                              cv::Point(detectedFaces.faceRect[i].right - theta,
+                                        detectedFaces.faceRect[i].bottom - theta),
                               cv::Scalar(150, 150, 150), 1);
                 } else {
-                    rectangle(frame, cv::Point(detectedFaces.faceRect[i].left + theta, detectedFaces.faceRect[i].top + theta),
-                              cv::Point(detectedFaces.faceRect[i].right - theta, detectedFaces.faceRect[i].bottom - theta),
+                    rectangle(frame,
+                              cv::Point(detectedFaces.faceRect[i].left + theta, detectedFaces.faceRect[i].top + theta),
+                              cv::Point(detectedFaces.faceRect[i].right - theta,
+                                        detectedFaces.faceRect[i].bottom - theta),
                               cv::Scalar(0, 255, 0), 1);
                 }
 
@@ -205,8 +208,43 @@ cv::Mat ArcFace::detect(cv::Mat &frame, bool online) {
     return frame;
 }
 
-void ArcFace::register_features() {
+void ArcFace::register_features(cv::Mat frame) {
+    auto originalImg = cvIplImage(frame);
+    IplImage *img = cvCreateImage(cvSize(originalImg.width - originalImg.width %
+                                                             4, originalImg.height), IPL_DEPTH_8U,
+                                  originalImg.nChannels);
+    CvSize size = cvSize(img->width, img->height);//区域大小
+    cvSetImageROI(&originalImg, cvRect(0, 0, size.width, size.height));//设置源图像ROI
+    cvCopy(&originalImg, img); //复制图像
+    cvResetImageROI(&originalImg);//源图像用完后,清空ROI
 
+    ASF_MultiFaceInfo detectedFaces = {0};
+
+
+
+
+    ASF_FaceFeature feature = {0};
+    ASF_SingleFaceInfo singleDetectedFaces = {0};
+    singleDetectedFaces.faceRect.left = detectedFaces.faceRect[0].left;
+    singleDetectedFaces.faceRect.top = detectedFaces.faceRect[0].top;
+    singleDetectedFaces.faceRect.right = detectedFaces.faceRect[0].right;
+    singleDetectedFaces.faceRect.bottom = detectedFaces.faceRect[0].bottom;
+    singleDetectedFaces.faceOrient = detectedFaces.faceOrient[0];
+    //图像数据以结构体形式传入,对更高精度的图像兼容性更好
+    ASVLOFFSCREEN offscreen = {0};
+    offscreen.u32PixelArrayFormat = ASVL_PAF_RGB24_B8G8R8;
+    offscreen.i32Width = img->width;
+    offscreen.i32Height = img->height;
+    offscreen.pi32Pitch[0] = img->widthStep;
+    offscreen.ppu8Plane[0] = (MUInt8 *) img->imageData;
+    MRESULT res = ASFFaceFeatureExtractEx(handle, &offscreen, &singleDetectedFaces,
+                                          &feature);
+    if (MOK != res) {
+        printf("ASFFaceFeatureExtractEx failed: %d\n", res);
+    }
+
+
+    cvReleaseImage(&img);
 }
 
 

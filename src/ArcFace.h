@@ -40,7 +40,7 @@ public:
     cv::Mat detect(cv::Mat &frame, bool online = false);
 
     // 人脸注册
-    void register_features();
+    void register_features(cv::Mat);
 
     //
 
