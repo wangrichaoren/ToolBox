@@ -131,10 +131,10 @@ cv::Mat ArcFace::detect(cv::Mat &frame, bool online) {
         } else {
             // 打印人脸检测结果
             res = ASFProcessEx(handle, &offscreen, &detectedFaces, processMask);
-            if (res != MOK)
-                printf("ASFProcessEx fail: %d\n", res);
-            else
-                printf("ASFProcessEx sucess: %d\n", res);
+//            if (res != MOK)
+//                printf("ASFProcessEx fail: %d\n", res);
+//            else
+//                printf("ASFProcessEx sucess: %d\n", res);
             for (int i = 0; i < detectedFaces.faceNum; i++) {
                 // 人脸信息
                 // 年龄
@@ -142,7 +142,7 @@ cv::Mat ArcFace::detect(cv::Mat &frame, bool online) {
                 res = ASFGetAge(handle, &ageInfo);
                 int age = 0;
                 if (res == MOK) {
-                    printf("年龄:%d\n", ageInfo.ageArray[i]);
+//                    printf("年龄:%d\n", ageInfo.ageArray[i]);
                     age = ageInfo.ageArray[i];
                 }
                 // 性别
@@ -176,6 +176,7 @@ cv::Mat ArcFace::detect(cv::Mat &frame, bool online) {
                           cv::Point(detectedFaces.faceRect[i].right, detectedFaces.faceRect[i].bottom),
                           c, 2);
 
+                // 人脸显示
                 int theta = 10;
                 if (!online) {
                     rectangle(frame,
@@ -191,14 +192,46 @@ cv::Mat ArcFace::detect(cv::Mat &frame, bool online) {
                               cv::Scalar(0, 255, 0), 1);
                 }
 
+                // 年龄柱状显示
                 auto dis = (detectedFaces.faceRect[i].right - detectedFaces.faceRect[i].left) / 10;
                 for (int j = 1; j < int(age / 10) + 1; ++j) {
                     cv::line(frame, cv::Point(dis * j + detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top),
                              cv::Point(dis * j + detectedFaces.faceRect[i].left, detectedFaces.faceRect[i].top - 5 * j),
-                             c,
+                             cv::Scalar(0, 255, 255),
                              2);
                 }
 
+                // 其他显示
+
+                int x_start = frame.cols - 200;
+                int x_end = frame.cols - 140;
+                int font_x = x_end + 5;
+                int y = 20;
+
+                cv::rectangle(frame, cv::Point(x_start - 10, y - 10), cv::Point(frame.cols - 5, y + 75),
+                              cv::Scalar(0, 0, 0));
+
+
+                cv::line(frame, cv::Point(x_start, y), cv::Point(x_end, y), cv::Scalar(255, 0, 0),
+                         1);
+                cv::putText(frame, "male", cv::Point(font_x, y + 5), 1, 1, cv::Scalar(255, 0, 0));
+
+
+                cv::line(frame, cv::Point(x_start, y + 15), cv::Point(x_end, y + 15), cv::Scalar(0, 0, 255),
+                         1);
+                cv::putText(frame, "female", cv::Point(font_x, y + 15 + 5), 1, 1, cv::Scalar(0, 0, 255));
+
+                cv::line(frame, cv::Point(x_start, y + 30), cv::Point(x_end, y + 30), cv::Scalar(0, 255, 0),
+                         1);
+                cv::putText(frame, "registered", cv::Point(font_x, y + 30 + 5), 1, 1, cv::Scalar(0, 255, 0));
+
+                cv::line(frame, cv::Point(x_start, y + 45), cv::Point(x_end, y + 45), cv::Scalar(150, 150, 150),
+                         1);
+                cv::putText(frame, "not registered", cv::Point(font_x, y + 45 + 5), 1, 1, cv::Scalar(150, 150, 150));
+
+                cv::line(frame, cv::Point(x_start, y + 60), cv::Point(x_end, y + 60), cv::Scalar(0, 255, 255),
+                         1);
+                cv::putText(frame, "age", cv::Point(font_x, y + 60 + 5), 1, 1, cv::Scalar(0, 255, 255));
             }
         }
         //释放图像内存,这里只是做人脸检测,若还需要做特征提取等处理,图像数据没必要释放这么早
@@ -219,8 +252,6 @@ void ArcFace::register_features(cv::Mat frame) {
     cvResetImageROI(&originalImg);//源图像用完后,清空ROI
 
     ASF_MultiFaceInfo detectedFaces = {0};
-
-
 
 
     ASF_FaceFeature feature = {0};

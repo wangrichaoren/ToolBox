@@ -100,7 +100,7 @@ public:
     bool checkOpen() override {
         bool is_alive = false;
         astra_streamset_is_available(sensor, &is_alive);
-        std::cout << "astra alive: " << is_alive << std::endl;
+//        std::cout << "astra alive: " << is_alive << std::endl;
         return is_alive;
 //        if ((isRGB + isDepth) == 0) {
 //            return false;

@@ -27,6 +27,7 @@ face_detect::face_detect(QWidget *parent) :
     m_view = new graphics_view();
     m_view->moveToThread(m_thread);
 
+    // TODO 相机突然断开连接后处理，astra系列相机搞得有点麻烦
     connect(m_view, &graphics_view::link_error, [=] {
         scene->clear();
         cam->close();
@@ -36,6 +37,11 @@ face_detect::face_detect(QWidget *parent) :
         choose_cam_radio_btn_enable(true);
         showMessageBox(this, "相机断开连接!");
         return;
+    });
+
+    // 避免放大缩小graphics_view的的时候画面重叠
+    connect(scene, &QGraphicsScene::sceneRectChanged, [=] {
+        scene->clear();
     });
 
     // 定时器的信号与槽
@@ -61,14 +67,12 @@ face_detect::face_detect(QWidget *parent) :
     connect(ui->online_det_btn, &QPushButton::clicked, [=] {
         this->is_online = !this->is_online;
         if (is_online) {
-            std::cout << "打开在线检测" << std::endl;
+            qDebug("在线检测ON");
             std::string cam_name;
             if (ui->local_radioButton->isChecked()) {
-                std::cout << "打开本地相机" << std::endl;
                 cam = new local_camera();
                 cam_name = "本地相机";
             } else if (ui->astra_radioButton->isChecked()) {
-                std::cout << "打开乐视三合一相机" << std::endl;
                 cam_name = "乐视三合一相机";
                 cam = new AstraCamera();
             } else {
@@ -86,32 +90,58 @@ face_detect::face_detect(QWidget *parent) :
             m_view->set_cam(cam);
             m_thread->start();
             m_timer->start();
-            ui->online_det_btn->setText("在线检测(ON)");
+            ui->online_det_btn->setText("在线检测-关闭");
             choose_cam_radio_btn_enable(false);
+            ui->online_det_btn->setStyleSheet("background-color: rgb(120, 0, 0);color: white");
         } else {
-            std::cout << "关闭在线检测" << std::endl;
+            qDebug("在线检测OFF");
             cam->close();
             m_timer->stop();
             m_thread->quit();
             m_thread->wait();
             scene->clear();
-            ui->online_det_btn->setText("在线检测(OFF)");
+            ui->online_det_btn->setText("在线检测-开启");
             choose_cam_radio_btn_enable(true);
+            ui->online_det_btn->setStyleSheet("");
         }
+    });
+
+    // 离线检测
+    connect(ui->offline_det_btn, &QPushButton::clicked, [=] {
+        qDebug("离线检测");
+
 
     });
 
     // 管理员登录
     connect(ui->admin_btn, &QPushButton::clicked, [=] {
-        std::string pass_word = ui->lineEdit->text().toStdString();
-        // 默认密码 123
-        if (pass_word != "123") {
-            showMessageBox(this, "密码错误!");
-            return;
+        is_login = !is_login;
+        if (is_login) {
+            std::string pass_word = ui->lineEdit->text().toStdString();
+            // 默认密码 123
+            if (pass_word != "123") {
+                showMessageBox(this, "密码错误!");
+                ui->lineEdit->clear();
+                is_login = !is_login;
+                return;
+            }
+
+            ui->groupBox_2->setEnabled(true);
+            ui->lineEdit->clear();
+
+            this->init_database();
+
+            ui->lineEdit->setEnabled(false);
+            ui->admin_btn->setText("管理员退出");
+            ui->admin_btn->setStyleSheet("background-color: rgb(120, 0, 0);color: white");
+        } else {
+            ui->lineEdit->setEnabled(true);
+            ui->groupBox_2->setEnabled(false);
+            ui->comboBox->clear();
+            ui->num_label->clear();
+            ui->admin_btn->setText("管理员登录");
+            ui->admin_btn->setStyleSheet("");
         }
-        ui->groupBox_2->setEnabled(true);
-        // init database and set
-        this->init_database();
     });
 
 
@@ -161,9 +191,10 @@ inline void face_detect::showImage(cv::Mat &frame) {
 }
 
 void face_detect::init_database() {
-    std::cout << "更新" << std::endl;
+    qDebug("更新人脸数据库");
     auto p = get_abs_path("../datas/face_features");
-
+    ui->comboBox->addItem("测试");
+    ui->num_label->setText("test");
 }
 
 void face_detect::choose_cam_radio_btn_enable(bool f) {

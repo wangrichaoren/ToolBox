@@ -63,7 +63,7 @@ background-color: rgb(239, 41, 41);</string>
       <item row="1" column="1">
        <widget class="QPushButton" name="online_det_btn">
         <property name="text">
-         <string>在线检测(OFF)</string>
+         <string>在线检测-开启</string>
         </property>
        </widget>
       </item>

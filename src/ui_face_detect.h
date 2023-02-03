@@ -247,7 +247,7 @@ public:
         face_detect->setWindowTitle(QCoreApplication::translate("face_detect", "\344\272\272\350\204\270\350\257\206\345\210\253", nullptr));
         groupBox->setTitle(QString());
         offline_det_btn->setText(QCoreApplication::translate("face_detect", "\347\246\273\347\272\277\346\243\200\346\265\213", nullptr));
-        online_det_btn->setText(QCoreApplication::translate("face_detect", "\345\234\250\347\272\277\346\243\200\346\265\213(OFF)", nullptr));
+        online_det_btn->setText(QCoreApplication::translate("face_detect", "\345\234\250\347\272\277\346\243\200\346\265\213-\345\274\200\345\220\257", nullptr));
         offline_reg_btn->setText(QCoreApplication::translate("face_detect", "\347\246\273\347\272\277\346\263\250\345\206\214", nullptr));
         online_reg_btn->setText(QCoreApplication::translate("face_detect", "\345\234\250\347\272\277\346\263\250\345\206\214", nullptr));
         local_radioButton->setText(QCoreApplication::translate("face_detect", "\346\234\254\345\234\260\347\233\270\346\234\272", nullptr));

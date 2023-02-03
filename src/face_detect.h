@@ -74,7 +74,9 @@ private:
     graphics_view *m_view;
 
     bool is_online = false;
+    bool is_login = false;
 
+signals:
 };
 
 
