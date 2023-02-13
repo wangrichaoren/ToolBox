@@ -19,6 +19,10 @@
 #include "ArcFace.h"
 #include "local_camera.h"
 #include "AstraCamera.hpp"
+#include "QFileDialog"
+#include <QSqlDatabase>
+#include <QSqlQuery>
+#include <stdio.h>
 
 
 QT_BEGIN_NAMESPACE
@@ -57,6 +61,8 @@ public:
 
     void init_database();
 
+    void show_database();
+
     ~face_detect() override;
 
     void choose_cam_radio_btn_enable(bool f);
@@ -72,11 +78,17 @@ private:
     BaseCamera *cam;
     QThread *m_thread;
     graphics_view *m_view;
+    QSqlDatabase database;
+    vector<std::pair<string, ASF_FaceFeature>> m_features;
+    vector<std::pair<string, ASF_FaceFeature>> local_feature;
+
 
     bool is_online = false;
     bool is_login = false;
 
 signals:
+
+    void online_signal(bool f);
 };
 
 

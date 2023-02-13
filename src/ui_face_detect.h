@@ -60,9 +60,11 @@ public:
     QLineEdit *lineEdit;
     QGroupBox *groupBox_2;
     QGridLayout *gridLayout_6;
+    QComboBox *comboBox;
     QLabel *label;
     QLabel *num_label;
-    QComboBox *comboBox;
+    QPushButton *del_btn;
+    QPushButton *rename_btn;
 
     void setupUi(QDialog *face_detect)
     {
@@ -206,10 +208,15 @@ public:
         groupBox_2->setEnabled(false);
         gridLayout_6 = new QGridLayout(groupBox_2);
         gridLayout_6->setObjectName(QString::fromUtf8("gridLayout_6"));
+        comboBox = new QComboBox(groupBox_2);
+        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+
+        gridLayout_6->addWidget(comboBox, 0, 0, 1, 2);
+
         label = new QLabel(groupBox_2);
         label->setObjectName(QString::fromUtf8("label"));
 
-        gridLayout_6->addWidget(label, 1, 0, 1, 1);
+        gridLayout_6->addWidget(label, 2, 0, 1, 1);
 
         num_label = new QLabel(groupBox_2);
         num_label->setObjectName(QString::fromUtf8("num_label"));
@@ -220,12 +227,17 @@ public:
         num_label->setFont(font);
         num_label->setAlignment(Qt::AlignCenter);
 
-        gridLayout_6->addWidget(num_label, 1, 1, 1, 1);
+        gridLayout_6->addWidget(num_label, 2, 1, 1, 1);
 
-        comboBox = new QComboBox(groupBox_2);
-        comboBox->setObjectName(QString::fromUtf8("comboBox"));
+        del_btn = new QPushButton(groupBox_2);
+        del_btn->setObjectName(QString::fromUtf8("del_btn"));
 
-        gridLayout_6->addWidget(comboBox, 0, 0, 1, 2);
+        gridLayout_6->addWidget(del_btn, 1, 1, 1, 1);
+
+        rename_btn = new QPushButton(groupBox_2);
+        rename_btn->setObjectName(QString::fromUtf8("rename_btn"));
+
+        gridLayout_6->addWidget(rename_btn, 1, 0, 1, 1);
 
 
         gridLayout_2->addWidget(groupBox_2, 0, 2, 4, 1);
@@ -264,6 +276,8 @@ public:
         groupBox_2->setTitle(QCoreApplication::translate("face_detect", "\347\211\271\345\276\201\345\272\223", nullptr));
         label->setText(QCoreApplication::translate("face_detect", "\347\211\271\345\276\201\346\225\260\351\207\217:", nullptr));
         num_label->setText(QString());
+        del_btn->setText(QCoreApplication::translate("face_detect", "\345\210\240\351\231\244", nullptr));
+        rename_btn->setText(QCoreApplication::translate("face_detect", "\346\233\264\345\220\215", nullptr));
     } // retranslateUi
 
 };
